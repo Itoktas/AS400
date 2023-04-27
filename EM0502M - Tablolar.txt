@@ -1,8 +1,0 @@
-EM1899PT - Fon adetleri tablosu
-EMK100 -   Sözleşme zeyil tablosu
-EMK077 - Acente bilgileri tablosu
-EMK088A - FTGK Oran tablosu
-EMK272L3 - Aktarıp alıp almadığı tablosu
-EMK272A3 - Aktarıp alıp almadığı tablosu
-EM0502mg - Fig oranları tablosu
-EM0502me - Cayma geri alınanlar tablosu
