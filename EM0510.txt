@@ -1,0 +1,632 @@
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    1
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+      1       *%CSTD===========================================================*                                        88/88/88
+      2       ** Application. : TIU        Avivasa Temel Is Uygulamalari       *                                        88/88/88
+      3       ** Component. . : EM0510                        Type: RPGLE      *                                        88/88/88
+      4       **===============================================================*                                        88/88/88
+      5       ** Sub-system . :                                                *                                        88/88/88
+      6       ** Function . . :                                                *                                        88/88/88
+      7       ** Sub-function :                                                *                                        88/88/88
+      8       **%S=============================================================*                                        88/88/88
+      9       ** Description of functions:                                     *                                        88/88/88
+     11       **                                                               *                                        88/88/88
+     12       **                                                               *                                        88/88/88
+     13       **                                                               *                                        88/88/88
+     14       **%E=============================================================*                                        88/88/88
+     15       ** AUTHOR:    IBRAHIMT   20/10/2017 23:50  01.01.99              *                                        88/88/88
+     16       ** MODIFS: 02 TIUBES     09/12/2022 18:35  01.20.09 MR 22/  703  *                                        88/88/88
+     17       **           Denetim düzenlemeleri                               *                                        88/88/88
+     18       **         01 IBRAHIMT   04/11/2017 15:07  01.02.09 MR 17/  269  *                                        88/88/88
+     19       **           EM0510 BATCH                                        *                                        88/88/88
+     20       **         ** IBRAHIMT   20/10/2017 23:50  01.01.99 MR 17/  153  *                                        88/88/88
+     21       **           TYP-7795 Satış Kanalı Bazında Ödenen BES Komisyon   *                                        88/88/88
+     22       *%ECSTD==========================================================*                                        88/88/88
+   2200       *%LOC: SRC=*L01 OBJ=*L01                                                                                  03/08/17
+   2300         ctl-Opt OPTION(*SRCSTMT : *NODEBUGIO);                                                                  28/11/22
+   2400         ctl-Opt DATFMT(*ymd) datedit(*ymd);                                                                     28/11/22
+   2500         Dcl-f em0510pf Disk Usage(*update:*output) usropn Keyed;                                                28/11/22
+   2600         Dcl-f emk001 Disk Keyed;                                                                                28/11/22
+   2700         Dcl-f emk005 Disk Keyed;                                                                                28/11/22
+   2800         Dcl-f emk006 Disk Keyed;                                                                                28/11/22
+   2900         Dcl-f emk011 Disk Keyed;                                                                                28/11/22
+   3000         Dcl-f emk022 Disk Keyed;                                                                                28/11/22
+   3100         Dcl-f emk015 Disk Keyed;                                                                                28/11/22
+   3200         Dcl-f emk030b Disk Keyed;                                                                               28/11/22
+   3300         Dcl-f emk090 Disk Keyed;                                                                                28/11/22
+   3400         Dcl-f emk091 Disk Keyed;                                                                                28/11/22
+   3500         Dcl-f emk100 Disk Keyed;                                                                                28/11/22
+   3600         Dcl-f emk151 Disk Keyed;                                                                                28/11/22
+   3700         Dcl-f emk160l2 Disk Keyed;                                                                              28/11/22
+   3800         Dcl-f em0502fe Disk Keyed;                                                                              28/11/22
+   3900         Dcl-f em0502fx Disk Keyed rename(REM502F0:REM502Fx)                                                     28/11/22
+   4000                        prefix(t_);                                                                              28/11/22
+   4100         Dcl-f em0502fz Disk Keyed;                                                                              28/11/22
+   4200        // SD778272 kapsamında Figler için yapılan çalışma DP-57375                                              28/11/22
+   4300         Dcl-f em0502mg Disk Keyed;                                                                              28/11/22
+   4400                                                                                                                 28/11/22
+   4500         Dcl-s p_cmdstring char(132) Inz;                                                                        28/11/22
+   4600         Dcl-s cmdlen    packed(15:5) Inz;                                                                       28/11/22
+   4700         Dcl-s year      packed(4:0) Inz;                                                                        28/11/22
+   4800         Dcl-s month     packed(2:0) Inz;                                                                        28/11/22
+   4900         Dcl-s iptyil    packed(4:0) Inz;                                                                        28/11/22
+   5000         Dcl-s iptayi    packed(2:0) Inz;                                                                        28/11/22
+   5100         Dcl-s p_ind     packed(2:0) Inz;                                                                        28/11/22
+   5200         Dcl-s p_hrk     packed(2:0) Inz;                                                                        28/11/22
+   5300         Dcl-s figtutx   packed(19:4)Inz;                                                                        28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    2
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+   5400         Dcl-s p_agka    packed(1:0) dim(10) Inz;                                                                28/11/22
+   5500         Dcl-s mhbipt_tmp char(1) Inz;                                                                           28/11/22
+   5600         Dcl-s mhbm10_tmp char(1) Inz;                                                                           28/11/22
+   5700                                                                                                                 28/11/22
+   5800         Dcl-ds Indicators Len(99);                                                                              28/11/22
+   5900           Exit      Ind Pos(03);            // F3=Exit                                                          28/11/22
+   6000           f4        Ind Pos(04);            // F4=Prompt                                                        28/11/22
+   6100           f5        Ind Pos(05);            // F4=Prompt                                                        28/11/22
+   6200           back      Ind Pos(12);            // F12=Back                                                         28/11/22
+   6300           dokuz     Ind Pos(99);            // F12=Back                                                         28/11/22
+   6400           seksen    Ind Pos(80);            //                                                                  28/11/22
+   6500         End-ds;                                                                                                 28/11/22
+   6600                                                                                                                 28/11/22
+   6700         Dcl-pr Main Extpgm('EM0510');                                                                           28/11/22
+   6800           *N packed(4:0);                                                                                       28/11/22
+   6900           *N packed(2:0);                                                                                       28/11/22
+   7000           *N packed(1:0);                                                                                       28/11/22
+   7100           *N char(1);                                                                                           28/11/22
+   7200         End-pr;                                                                                                 28/11/22
+   7300                                                                                                                 28/11/22
+   7400         Dcl-pi Main;                                                                                            28/11/22
+   7500           p_yil packed(4:0);                                                                                    28/11/22
+   7600           p_ayi packed(2:0);                                                                                    28/11/22
+   7700           p_dknl packed(1:0);                                                                                   28/11/22
+   7800           p_basla char(1);                                                                                      28/11/22
+   7900         End-pi;                                                                                                 28/11/22
+   8000                                                                                                                 28/11/22
+   8100        // SD778272 kapsamında Figler için yapılan çalışma DP-57375                                              28/11/22
+   8200         Dcl-ds *N inz;                                                                                          28/11/22
+   8300           MHBCMT Zoned(8:0);                                                                                    28/11/22
+   8400           MHBCMYX Zoned(4:0) overlay(mhbcmt:1);                                                                 28/11/22
+   8500           MHBCMAX Zoned(2:0) overlay(mhbcmt:*next);                                                             28/11/22
+   8600           MHBCMGX Zoned(2:0) overlay(mhbcmt:*next);                                                             28/11/22
+   8700         End-ds;                                                                                                 28/11/22
+   8800                                                                                                                 28/11/22
+   8900         Dcl-ds *N inz;                                                                                          28/11/22
+   9000           d_yurtar Zoned(8:0);                                                                                  28/11/22
+   9100           haysby Zoned(4:0) overlay(d_yurtar:1);                                                                28/11/22
+   9200           haysba Zoned(2:0) overlay(d_yurtar:*next);                                                            28/11/22
+   9300           haysbg Zoned(2:0) overlay(d_yurtar:*next);                                                            28/11/22
+   9400         End-ds;                                                                                                 28/11/22
+   9500                                                                                                                 28/11/22
+   9600         Dcl-ds *N inz;                                                                                          28/11/22
+   9700           konutar Zoned(8:0);                                                                                   28/11/22
+   9800           konuyil Zoned(4:0) overlay(konutar:1);                                                                28/11/22
+   9900           konuayi Zoned(2:0) overlay(konutar:*next);                                                            28/11/22
+  10000           konugun Zoned(2:0) overlay(konutar:*next);                                                            28/11/22
+  10100         End-ds;                                                                                                 28/11/22
+  10200                                                                                                                 28/11/22
+  10300         Dcl-ds *N inz;                                                                                          28/11/22
+  10400           hesap_tmp Zoned(18:0);                                                                                28/11/22
+  10500           hesap1b Zoned(8:0) overlay(hesap_tmp:1);                                                              28/11/22
+  10600           hesap2b Zoned(2:0) overlay(hesap_tmp:17);                                                             28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    3
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  10700         End-ds;                                                                                                 28/11/22
+  10800                                                                                                                 28/11/22
+  10900         Dcl-ds *N inz;                                                                                          28/11/22
+  11000           thbmb9 Zoned(19:4);                                                                                   28/11/22
+  11100           d_inttar Zoned(8:0) overlay(thbmb9:8);                                                                28/11/22
+  11200         End-ds;                                                                                                 28/11/22
+  11300                                                                                                                 28/11/22
+  11400         Dcl-ds *N inz;                                                                                          28/11/22
+  11500           e_tarih  Zoned(6:0);                                                                                  28/11/22
+  11600           e_yil    Zoned(4:0) overlay(e_tarih:1);                                                               28/11/22
+  11700           e_ayi    Zoned(2:0) overlay(e_tarih:*next);                                                           28/11/22
+  11800         End-ds;                                                                                                 28/11/22
+  11900                                                                                                                 28/11/22
+  12000         Dcl-ds *N inz;                                                                                          28/11/22
+  12100           c_tarih  Zoned(6:0);                                                                                  28/11/22
+  12200           mhbcmy Zoned(4:0) overlay(c_tarih:1);                                                                 28/11/22
+  12300           mhbcma Zoned(2:0) overlay(c_tarih:*next);                                                             28/11/22
+  12400         End-ds;                                                                                                 28/11/22
+  12500                                                                                                                 28/11/22
+  12600         Dcl-pr fileclear Extpgm('QCMDEXC');                                                                     28/11/22
+  12700           *N char(200) Const;                                                                                   28/11/22
+  12800           *N packed(15:5) Const;                                                                                28/11/22
+  12900         End-pr;                                                                                                 28/11/22
+  13000                                                                                                                 28/11/22
+  13100         Dcl-pr fighes Extpgm('EPLFIGHES2');                                                                     28/11/22
+  13200           *N packed(4:0) Const;                                                                                 28/11/22
+  13300           *N packed(2:0) Const;                                                                                 28/11/22
+  13400           *N char(1) ;                                                                                          28/11/22
+  13500           *N packed(7:0) ;                                                                                      28/11/22
+  13600           *N packed(19:4) ;                                                                                     28/11/22
+  13700         End-pr;                                                                                                 28/11/22
+  13800                                                                                                                 28/11/22
+  13900         Dcl-pr pstatu Extpgm('EPLDRM');                                                                         28/11/22
+  14000           *N char(1) Const;                                                                                     28/11/22
+  14100           *N packed(7:0) Const;                                                                                 28/11/22
+  14200           *N packed(2:0) Const;                                                                                 28/11/22
+  14300           *N packed(2:0) Const;                                                                                 28/11/22
+  14400           *N packed(4:0) ;                                                                                      28/11/22
+  14500           *N packed(2:0) ;                                                                                      28/11/22
+  14600           *N packed(4:0) ;                                                                                      28/11/22
+  14700           *N packed(2:0) ;                                                                                      28/11/22
+  14800           *N packed(2:0) ;                                                                                      28/11/22
+  14900         End-pr;                                                                                                 28/11/22
+  15000                                                                                                                 28/11/22
+  15100         dcl-ds Keyemk151 likerec(remk151:*key) ;                                                                28/11/22
+  15200         dcl-ds Keyemk160l2 likerec(remk160:*key) ;                                                              28/11/22
+  15300                                                                                                                 28/11/22
+  15400         Dcl-s e_dkanal  zoned(1:0);                                                                             28/11/22
+  15500         Dcl-s yenmutx char(1);                                                                                  28/11/22
+  15501         Dcl-s xcins char(1);                                                                                    27/04/23
+  15600         Dcl-s komtipx char(20);                                                                                 28/11/22
+  15700                                                                                                                 28/11/22
+  15800        //Ana döngü--------------------------------------------------------------                                28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    4
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  15900           e_yil = p_yil;                                                                                        28/11/22
+  16000           e_ayi = p_ayi;                                                                                        28/11/22
+  16100           e_dkanal= p_dknl;                                                                                     28/11/22
+  16200                                                                                                                 28/11/22
+  16300             exsr sbr_fileclear;                                                                                 28/11/22
+  16400             exsr sbr_filefill;                                                                                  28/11/22
+  16500                                                                                                                 28/11/22
+  16600         *Inlr = *On;                                                                                            28/11/22
+  16700        //-----------------------------------------------------------------------                                28/11/22
+  16800                                                                                                                 28/11/22
+  16900                                                                                                                 28/11/22
+  17000        begsr sbr_fileclear;                                                                                     28/11/22
+  17100           p_cmdstring='CLRPFM EM0510PF';                                                                        28/11/22
+  17200                                                                                                                 28/11/22
+  17300           monitor;                                                                                              28/11/22
+  17400           fileclear(p_cmdstring:%len(%trim(p_cmdstring)));                                                      28/11/22
+  17500           on-error;                                                                                             28/11/22
+  17600           close em0510pf;                                                                                       28/11/22
+  17700           fileclear(p_cmdstring:%len(%trim(p_cmdstring)));                                                      28/11/22
+  17800           endmon;                                                                                               28/11/22
+  17900                                                                                                                 28/11/22
+  18000           open em0510pf;                                                                                        28/11/22
+  18100        endsr;                                                                                                   28/11/22
+  18200                                                                                                                 28/11/22
+  18300        //-----------------------------------------------------------------------                                28/11/22
+  18400                                                                                                                 28/11/22
+  18500        begsr sbr_filefill;                                                                                      28/11/22
+  18600             setll (e_yil:e_ayi) em0502fe;                                                                       28/11/22
+  18700         Dou %Eof(em0502fe);                                                                                     28/11/22
+  18800             Read em0502fe;                                                                                      28/11/22
+  18900                                                                                                                 28/11/22
+  19000                                                                                                                 28/11/22
+  19100               if %Eof(em0502fe);                                                                                28/11/22
+  19200                  leave;                                                                                         28/11/22
+  19300               endif;                                                                                            28/11/22
+  19400                                                                                                                 28/11/22
+  19500               if mhbagk<>p_dknl or e_tarih<>c_tarih or mhbagk=0 ;                                               28/11/22
+  19600                  iter;                                                                                          28/11/22
+  19700               endif;                                                                                            28/11/22
+  19800                                                                                                                 28/11/22
+  19900        clear rem510pf;                                                                                          28/11/22
+  20000                                                                                                                 28/11/22
+  20100        //Katılımcı ad Soyad ------------------------------------------                                          28/11/22
+  20200           chain (mhbpak:mhbpno) emk100;                                                                         28/11/22
+  20300                 if %found(emk100);                                                                              28/11/22
+  20400                    yurtar=d_yurtar;                                                                             28/11/22
+  20500                      chain (haymno) emk015;                                                                     28/11/22
+  20600                            if %found(emk015);                                                                   28/11/22
+  20700                               musadi=%trim(ad) + ' ' + %trim(soyad);                                            28/11/22
+  20800                            endif;                                                                               28/11/22
+  20900                 else;                                                                                           28/11/22
+  21000                     musadi=*blanks;                                                                             28/11/22
+  21100                 endif;                                                                                          28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    5
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  21200                                                                                                                 28/11/22
+  21300         if mhbmut=' ';                                                                                          28/11/22
+  21400            yenmutx='Y';                                                                                         28/11/22
+  21500         else;                                                                                                   28/11/22
+  21600            yenmutx='M';                                                                                         28/11/22
+  21700         endif;                                                                                                  28/11/22
+  21800                                                                                                                 28/11/22
+  21900        //Komisyon tipi                                                                                          28/11/22
+  22000           komtipx= *blanks;                                                                                     28/11/22
+  22100           komtip = *blanks;                                                                                     28/11/22
+  22200           if mhbipt='B' and mhbm10='K';                                                                         28/11/22
+  22300              mhbipt_tmp = 'F';                                                                                  28/11/22
+  22400           else;                                                                                                 28/11/22
+  22500              mhbipt_tmp = mhbipt;                                                                               28/11/22
+  22600           endif;                                                                                                28/11/22
+  22700                                                                                                                 28/11/22
+  22800           chain (mhbipt_tmp) em0502fz;                                                                          28/11/22
+  22900                 if %found(em0502fz);                                                                            28/11/22
+  23000                      select;                                                                                    28/11/22
+  23100                      when mhbipt_tmp='F';                                                                       28/11/22
+  23200                           komtipx=%trim(ACK2FZ) + ' FİG';                                                       28/11/22
+  23300                      when mhbipt_tmp='5';                                                                       28/11/22
+  23400                           komtipx=%trim(ACK2FZ) + ' APE';                                                       28/11/22
+  23500                      when mhbipt_tmp='C';                                                                       28/11/22
+  23600                           komtipx=%trim(ACK2FZ) + ' ÇIKIŞ';                                                     28/11/22
+  23700                      when mhbipt_tmp='D';                                                                       28/11/22
+  23800                           komtipx=%trim(ACK2FZ) + ' TAHSİLATSIZLIK';                                            28/11/22
+  23900                      when mhbipt_tmp='B' and mhbm10='K';                                                        28/11/22
+  24000                           komtipx= 'OK Komisyonu İADE';                                                         28/11/22
+  24100                      when mhbipt_tmp='3' or mhbipt='4';                                                         28/11/22
+  24200                              if mhbm10='T';                                                                     28/11/22
+  24300                                    komtipx=%trim(ACK2FZ) + ' TOPLU ÖDEME';                                      28/11/22
+  24400                              else;                                                                              28/11/22
+  24500                                    komtipx=%trim(ACK2FZ) + ' KATKI PAYI';                                       28/11/22
+  24600                              endif;                                                                             28/11/22
+  24700                      endsl;                                                                                     28/11/22
+  24800                 else;                                                                                           28/11/22
+  24900                      if mhbagk=2 and mhbipt_tmp=' ';                                                            28/11/22
+  25000                           komtipx='G.GİRİŞİMCİ MRK.KOM';                                                        28/11/22
+  25100                      endif;                                                                                     28/11/22
+  25200                 endif;                                                                                          28/11/22
+  25300                                                                                                                 28/11/22
+  25400           if mhbipt='F';                                                                                        28/11/22
+  25500           chain (mhbace:mhbpno:mhbcmy:mhbcma:komtipx:yenmutx) em0510pf;                                         28/11/22
+  25600             if not %found(em0510pf);                                                                            28/11/22
+  25700                clear rem510pf;                                                                                  28/11/22
+  25800             endif;                                                                                              28/11/22
+  25900           endif;                                                                                                28/11/22
+  26000                                                                                                                 28/11/22
+  26100         police=mhbpno;                                                                                          28/11/22
+  26200         komtip =komtipx;                                                                                        28/11/22
+  26300         yenmut =yenmutx;                                                                                        28/11/22
+  26400                                                                                                                 28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    6
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  26500        //Katılımcı ad Soyad ------------------------------------------                                          28/11/22
+  26600           chain (mhbpak:mhbpno) emk100;                                                                         28/11/22
+  26700                 if %found(emk100);                                                                              28/11/22
+  26800                    yurtar=d_yurtar;                                                                             28/11/22
+  26900                      chain (haymno) emk015;                                                                     28/11/22
+  27000                            if %found(emk015);                                                                   28/11/22
+  27100                               musadi=%trim(ad) + ' ' + %trim(soyad);                                            28/11/22
+  27200                            endif;                                                                               28/11/22
+  27300                 else;                                                                                           28/11/22
+  27400                     musadi=*blanks;                                                                             28/11/22
+  27500                 endif;                                                                                          28/11/22
+  27600        //Tahsilat dosyası bilgileri ------------------------------------------                                  28/11/22
+  27700         setll (mhbpak:mhbpno:mhbtec:mhbzey:mhbdev:mhbmnx:mhbbra:mhbvyl:mhbvay)                                  28/11/22
+  27800                emk151;                                                                                          28/11/22
+  27900                                                                                                                 28/11/22
+  28000         Dou %Eof(emk151);                                                                                       28/11/22
+  28100          reade (mhbpak:mhbpno:mhbtec:mhbzey:mhbdev:mhbmnx:mhbbra:mhbvyl:mhbvay)                                 28/11/22
+  28200                emk151;                                                                                          28/11/22
+  28300                                                                                                                 28/11/22
+  28400               if %Eof(emk151);                                                                                  28/11/22
+  28500                 leave;                                                                                          28/11/22
+  28600                endif;                                                                                           28/11/22
+  28700                                                                                                                 28/11/22
+  28800               if thbvpr<>mhbvpr;                                                                                28/11/22
+  28900                  iter;                                                                                          28/11/22
+  29000               endif;                                                                                            28/11/22
+  29100           leave;                                                                                                28/11/22
+  29200           enddo;                                                                                                28/11/22
+  29300                                                                                                                 28/11/22
+  29400           if %found(emk151);                                                                                    28/11/22
+  29500                   //İntikal Tarihi                                                                              28/11/22
+  29600                     tahtip=thbm10;                                                                              28/11/22
+  29700                     inttar=d_inttar;                                                                            28/11/22
+  29800                                                                                                                 28/11/22
+  29900              if mhbipt='5'or mhbipt='C';                                                                        28/11/22
+  30000                 else;                                                                                           28/11/22
+  30100                     if thbdov<>' ';                                                                             28/11/22
+  30200                        thbodm=thbodm*thbbos;                                                                    28/11/22
+  30300                        thbgad=thbgad*thbbos;                                                                    28/11/22
+  30400                     endif;                                                                                      28/11/22
+  30500              endif;                                                                                             28/11/22
+  30600                     konutut=(thbodm-thbgad);                                                                    28/11/22
+  30700                                                                                                                 28/11/22
+  30800                  //Brüt Komisyon APE                                                                            28/11/22
+  30900                  if mhbipt='5'or mhbipt='C';                                                                    28/11/22
+  31000                  if thbdov=*blanks and thbgac<>*blanks;                                                         28/11/22
+  31100                  thbgad=((thbgad)+.005);                                                                        28/11/22
+  31200                                                                                                                 28/11/22
+  31300                  elseif thbdov<>*blanks and thbgac=*blanks and thbgad>0;                                        28/11/22
+  31400                  thbgad=((thbgad*thbbos)+.005);                                                                 28/11/22
+  31500                                                                                                                 28/11/22
+  31600                  elseif thbdov<>*blanks and thbgac<>*blanks;                                                    28/11/22
+  31700                  thbgad=(((thbm14*thbbos)*thbgad)+.005);                                                        28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    7
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  31800                  endif;                                                                                         28/11/22
+  31900                                                                                                                 28/11/22
+  32000                  if thbods=1;                                                                                   28/11/22
+  32100                  bkomape+=(thbodm-thbgad)*12;                                                                   28/11/22
+  32200                                                                                                                 28/11/22
+  32300                  elseif thbods=2;                                                                               28/11/22
+  32400                  bkomape+=(thbodm-thbgad)*4;                                                                    28/11/22
+  32500                                                                                                                 28/11/22
+  32600                  elseif thbods=3;                                                                               28/11/22
+  32700                  bkomape+=(thbodm-thbgad)*2;                                                                    28/11/22
+  32800                                                                                                                 28/11/22
+  32900                  elseif thbods=4;                                                                               28/11/22
+  33000                  bkomape+=(thbodm-thbgad);                                                                      28/11/22
+  33100                  endif;                                                                                         28/11/22
+  33200                                                                                                                 28/11/22
+  33300                  select;                                                                                        28/11/22
+  33400                  when thbagk=9;                                                                                 28/11/22
+  33500                  if bkomape>6000 and thbptp=21 and                                                              28/11/22
+  33600                     (thbfor=25 or thbfor=32 or thbfor=38);                                                      28/11/22
+  33700                  okomape+=6000;                                                                                 28/11/22
+  33800                  endif;                                                                                         28/11/22
+  33900                                                                                                                 28/11/22
+  34000                  when thbagk=1;                                                                                 28/11/22
+  34100                  if c_tarih>=201804;                                                                            28/11/22
+  34200                  if bkomape>6324;                                                                               28/11/22
+  34300                  okomape+=6324;                                                                                 28/11/22
+  34400                  else;                                                                                          28/11/22
+  34500                  okomape =bkomape;                                                                              28/11/22
+  34600                  endif;                                                                                         28/11/22
+  34700                                                                                                                 28/11/22
+  34800                  else;                                                                                          28/11/22
+  34900                  if bkomape>5580;                                                                               28/11/22
+  35000                  okomape+=5580;                                                                                 28/11/22
+  35100                  else;                                                                                          28/11/22
+  35200                  okomape =bkomape;                                                                              28/11/22
+  35300                  endif;                                                                                         28/11/22
+  35400                  endif;                                                                                         28/11/22
+  35500                  endsl;                                                                                         28/11/22
+  35600              endif;                                       //mhbipt=5 sonu-----                                  28/11/22
+  35700                                                                                                                 28/11/22
+  35800                    chain (thbtah) emk006 ;                                                                      28/11/22
+  35900                          if %found(emk006);                                                                     28/11/22
+  36000                             odeadi=tahiza;                                                                      28/11/22
+  36100                          endif;                                                                                 28/11/22
+  36200         Keyemk160l2.thopak = mhbpak;                                                                            28/11/22
+  36300         Keyemk160l2.thopno = mhbpno;                                                                            28/11/22
+  36400         Keyemk160l2.thotec = mhbtec;                                                                            28/11/22
+  36500         Keyemk160l2.thovyl = mhbvyl;                                                                            28/11/22
+  36600         Keyemk160l2.thovay = mhbvay;                                                                            28/11/22
+  36700         Keyemk160l2.thovgn = mhbvgn;                                                                            28/11/22
+  36800         if thbart=1;                                                                                            28/11/22
+  36900         Keyemk160l2.thobak = 'B';                                                                               28/11/22
+  37000         elseif thbart=2;                                                                                        28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    8
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  37100         Keyemk160l2.thobak = 'A';                                                                               28/11/22
+  37200         endif;                                                                                                  28/11/22
+  37300         Keyemk160l2.thoodc = 'PL';                                                                              28/11/22
+  37400             chain %kds(Keyemk160l2) emk160l2 ;                                                                  28/11/22
+  37500                          if %found(emk160l2);                                                                   28/11/22
+  37600                             konuyil=thofyl;                                                                     28/11/22
+  37700                             konuayi=thofay;                                                                     28/11/22
+  37800                             konugun=thofgn;                                                                     28/11/22
+  37900                          endif;                                                                                 28/11/22
+  38000          endif;                                                                                                 28/11/22
+  38100                                                                                                                 28/11/22
+  38200        //Plan Adı -------------------------------------------------------------                                 28/11/22
+  38300           chain (mhbptp:mhbfor) emk090 ;                                                                        28/11/22
+  38400                 if %found(emk090);                                                                              28/11/22
+  38500                    plnadi=htmacf;                                                                               28/11/22
+  38600                 endif;                                                                                          28/11/22
+  38700                                                                                                                 28/11/22
+  38800        //Üretim Kanalını Adını alalım------------------------------------------                                 28/11/22
+  38900            chain (mhbagk) emk022;                                                                               28/11/22
+  39000                  if %found(emk022);                                                                             28/11/22
+  39100                     kanal=agkack;                                                                               28/11/22
+  39200                  endif;                                                                                         28/11/22
+  39300                                                                                                                 28/11/22
+  39400            chain (mhbace) emk011;                                                                               28/11/22
+  39500                  if %found(emk011);                                                                             28/11/22
+  39600                     partaj=acent;                                                                               28/11/22
+  39700                     araadi=aadi1;                                                                               28/11/22
+  39800                  endif;                                                                                         28/11/22
+  39900          if mhbagk=9;                                                                                           28/11/22
+  40000             chain (turk) emk030b;                                                                               28/11/22
+  40100                 if %found(emk030b);                                                                             28/11/22
+  40200                    araadi=%trim(banack) +' '+%trim(aadi1);                                                      28/11/22
+  40300                 endif;                                                                                          28/11/22
+  40400          endif;                                                                                                 28/11/22
+  40500        //Rapor tarihi Katkı payı tutarı-----------------------------------------                                28/11/22
+  40600           exsr sbr_emk151;                                                                                      28/11/22
+  40700                                                                                                                 28/11/22
+  40800        //Aylık FİG tutarı -??????????????????-----------------------------------                                28/11/22
+  40900           figtut=0;                                                                                             28/11/22
+  41000           if mhbipt='F';                                                                                        28/11/22
+  41100              fighes(e_yil:e_ayi:mhbpak:mhbpno:figtutx);                                                         28/11/22
+  41200              figtut=figtutx;                                                                                    28/11/22
+  41300           endif;                                                                                                28/11/22
+  41400                                                                                                                 28/11/22
+  41500        //Komisyon Oranı                                                                                         28/11/22
+  41600          komorn=mhbora;                                                                                         28/11/22
+  41700                                                                                                                 28/11/22
+  41800         if mhbipt<>'F';                                                                                         28/11/22
+  41900            tahtut=0;                                                                                            28/11/22
+  42000            ipttut=0;                                                                                            28/11/22
+  42100         endif;                                                                                                  28/11/22
+  42200                                                                                                                 28/11/22
+  42300        if mhbodk>0;                                                                                             28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE    9
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  42400        mhbhtu=mhbhtu*mhbodk;                                                                                    28/11/22
+  42500        endif;                                                                                                   28/11/22
+  42600                                                                                                                 28/11/22
+  42700        if mhbart=1;                                                                                             28/11/22
+  42800        tahtut=tahtut+mhbhtu;                                                                                    28/11/22
+  42900        elseif mhbart=2;                                                                                         28/11/22
+  43000        ipttut=ipttut+mhbhtu;                                                                                    28/11/22
+  43100        endif;                                                                                                   28/11/22
+  43200                                                                                                                 28/11/22
+  43300        if (mhbagk=6 or mhbagk=2) and mhbipt='F';                                                                28/11/22
+  43400        konutut+=mhbvpr;                                                                                         28/11/22
+  43500        figtut +=mhbvpr;                                                                                         28/11/22
+  43600        komorn =.002;                                                                                            28/11/22
+  43700        endif;                                                                                                   28/11/22
+  43800                                                                                                                 28/11/22
+  43900        if mhbagk=2 and mhbipt=' ';                                                                              28/11/22
+  44000        konutut+=mhbvpr;                                                                                         28/11/22
+  44100        komorn =.002;                                                                                            28/11/22
+  44200        endif;                                                                                                   28/11/22
+  44300                                                                                                                 28/11/22
+  44400        if mhbagk=1 and mhbipt='F' or (mhbipt='B' and mhbm10='K');                                               28/11/22
+  44500            if mhbipt='B' and mhbm10='K';                                                                        28/11/22
+  44600                  mhbipt_tmp = 'F';                                                                              28/11/22
+  44700                  mhbm10_tmp = 'F';                                                                              28/11/22
+  44800               chain (mhbpak:mhbpno:mhbmhy:mhbmha:mhbmhg:                                                        28/11/22
+  44900                      mhbipt_tmp:mhbm10_tmp) em0502fx;                                                           28/11/22
+  45000                  if %found(em0502fx);                                                                           28/11/22
+  45100                     MHBCMYX= t_MHBCMY;                                                                          28/11/22
+  45200                     MHBCMAX= t_MHBCMA;                                                                          28/11/22
+  45300                     MHBCMGX= t_MHBCMG;                                                                          28/11/22
+  45400                  endif;                                                                                         28/11/22
+  45500              figtut=0;                                                                                          28/11/22
+  45600              fighes(MHBCMYX:MHBCMAX:mhbpak:mhbpno:figtutx);                                                     28/11/22
+  45700              figtut=figtutx;                                                                                    28/11/22
+  45800            else;                                                                                                28/11/22
+  45900                  mhbipt_tmp = mhbipt;                                                                           28/11/22
+  46000                  mhbm10_tmp = mhbm10;                                                                           28/11/22
+  46100            endif;                                                                                               28/11/22
+  46200        konutut    = figtut;                                                                                     28/11/22
+  46300        //komorn =4.5;                                                                                           28/11/22
+  46400        // SD778272 kapsamında Figler için yapılan çalışma DP-57375                                              28/11/22
+  46500          komorn =0  ;                                                                                           28/11/22
+  46600          MHBCMYX= MHBCMY ;                                                                                      28/11/22
+  46700          MHBCMAX= MHBCMA ;                                                                                      28/11/22
+  46800          MHBCMGX= MHBCMG ;                                                                                      28/11/22
+  46801             //  Özcan KUTLU  DP-63439  BES Komisyon Oran Değişikliği - 510                                      27/04/23
+  46900         // setgt (mhbipt_tmp:mhbcmt) em0502mg;                                                                  27/04/23
+  47000         // readpe (mhbipt_tmp) em0502mg;                                                                        27/04/23
+  47001          xcins=HAYCNS ;                                                                                         27/04/23
+  47002          if HAYPTP=25;                                                                                          27/04/23
+  47003             xcins='O';                                                                                          27/04/23
+  47004             endif;                                                                                              27/04/23
+  47005          setgt (xcins:mhbcmt) em0502mg;                                                                         27/04/23
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE   10
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  47006          readpe (xcins) em0502mg;                                                                               27/04/23
+  47100            if not %Eof(em0502mg);                                                                               28/11/22
+  47200               komorn=foran ;                                                                                    28/11/22
+  47300            else;                                                                                                28/11/22
+  47400               komorn=0 ;                                                                                        28/11/22
+  47500            endif;                                                                                               28/11/22
+  47600        endif;                                                                                                   28/11/22
+  47700                                                                                                                 28/11/22
+  47800        nettut=tahtut-ipttut;                                                                                    28/11/22
+  47900                                                                                                                 28/11/22
+  48000        //Satutüsü nedir --------------------------------------------------------                                28/11/22
+  48100           month=*month;                                                                                         28/11/22
+  48200           year =*year;                                                                                          28/11/22
+  48300           iptyil=0;                                                                                             28/11/22
+  48400           iptayi=0;                                                                                             28/11/22
+  48500           pstatu(mhbpak:mhbpno:mhbtec:month:year:iptayi:iptyil:p_hrk:p_ind);                                    28/11/22
+  48600                 chain (p_hrk) emk001;                                                                           28/11/22
+  48700           statu=%char(p_hrk) +' '+ %trim(harack);                                                               28/11/22
+  48800                                                                                                                 28/11/22
+  48900        //Hesap Numarası --------------------------------------------------------                                28/11/22
+  49000         chain (mhbptp:mhbfor:mhbbra:mhbcns:mhbdov) emk091;                                                      28/11/22
+  49100               if %found(emk091);                                                                                28/11/22
+  49200                  hesap_tmp=hmmhs5;                                                                              28/11/22
+  49300               endif;                                                                                            28/11/22
+  49400         if mhbm10='Z' or mhbm10='Q' or mhbm10='E' or mhbm10='F';                                                28/11/22
+  49500         hesap1b=65201100;                                                                                       28/11/22
+  49600         endif;                                                                                                  28/11/22
+  49700                                                                                                                 28/11/22
+  49800         if mhbagk=1;                                                                                            28/11/22
+  49900            hesap2b=1;                                                                                           28/11/22
+  50000            if mhbipt='F';                                                                                       28/11/22
+  50100               hesap2b=4;                                                                                        28/11/22
+  50200            endif;                                                                                               28/11/22
+  50300            if mhbipt='5';                                                                                       28/11/22
+  50400               hesap2b=5;                                                                                        28/11/22
+  50500            endif;                                                                                               28/11/22
+  50600            if mhbm10='T';                                                                                       28/11/22
+  50700               hesap2b=6;                                                                                        28/11/22
+  50800            endif;                                                                                               28/11/22
+  50900            if mhbipt='A' or mhbipt='B' or mhbipt='C' or  mhbipt='D';                                            28/11/22
+  51000               hesap2b=7;                                                                                        28/11/22
+  51100            endif;                                                                                               28/11/22
+  51200         else;                              //mhbagk=1                                                           28/11/22
+  51300             if mhbagk=2;                                                                                        28/11/22
+  51400                hesap2b=2;                                                                                       28/11/22
+  51500                if mhbipt='V';                                                                                   28/11/22
+  51600                   hesap1b=65201200;                                                                             28/11/22
+  51700                endif;                                                                                           28/11/22
+  51800               else;                        //mhbagk=2                                                           28/11/22
+  51900                   if mhbagk=6;                                                                                  28/11/22
+  52000                      hesap2b=99;                                                                                28/11/22
+  52100                      if mhbipt='V';                                                                             28/11/22
+  52200                         hesap1b=65201200;                                                                       28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE   11
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+  52300                         endif;                                                                                  28/11/22
+  52400                     else;                  //mhbagk=6                                                           28/11/22
+  52500                        if mhbagk=5;                                                                             28/11/22
+  52600                           hesap2b=99;                                                                           28/11/22
+  52700                           if mhbipt='V';                                                                        28/11/22
+  52800                              hesap1b=65201200;                                                                  28/11/22
+  52900                           endif;                                                                                28/11/22
+  53000                        else;                  //mhbagk=5                                                        28/11/22
+  53100                              hesap2b=99;                                                                        28/11/22
+  53200                              if mhbipt='V';                                                                     28/11/22
+  53300                                 hesap1b=65201200;                                                               28/11/22
+  53400                              endif;                                                                             28/11/22
+  53500                        endif;                                                                                   28/11/22
+  53600                     endif;                                                                                      28/11/22
+  53700               endif;                                                                                            28/11/22
+  53800         endif;                                                                                                  28/11/22
+  53900          hesap= %EDITC(hesap_tmp:'X');                                                                          28/11/22
+  54000                                                                                                                 28/11/22
+  54100           calyil=mhbcmy;                                                                                        28/11/22
+  54200           calayi=mhbcma;                                                                                        28/11/22
+  54300           if mhbipt='F';                                                                                        28/11/22
+  54400               if %found(em0510pf);                                                                              28/11/22
+  54500                 update rem510pf;                                                                                28/11/22
+  54600               else;                                                                                             28/11/22
+  54700               write rem510pf;                                                                                   28/11/22
+  54800               endif;                                                                                            28/11/22
+  54900           else;                                                                                                 28/11/22
+  55000               write rem510pf;                                                                                   28/11/22
+  55100           endif;                                                                                                28/11/22
+  55200        Enddo;                                                                                                   28/11/22
+  55300        Endsr;                                                                                                   28/11/22
+  55400        //--------------------------------------------------------------------                                   28/11/22
+  55500                                                                                                                 28/11/22
+  55600        begsr sbr_emk151;                                                                                        28/11/22
+  55700          kattut=0;                                                                                              28/11/22
+  55800          setgt (mhbpak:mhbpno:mhbtec:mhbzey:mhbdev:mhbmnx:mhbbra:mhbvyl:mhbvay)                                 28/11/22
+  55900                emk151;                                                                                          28/11/22
+  56000                                                                                                                 28/11/22
+  56100         Dou %Eof(emk151);                                                                                       28/11/22
+  56200             readpe (haypak:haypno) emk151;                                                                      28/11/22
+  56300                                                                                                                 28/11/22
+  56400               if %Eof(emk151);                                                                                  28/11/22
+  56500                 leave;                                                                                          28/11/22
+  56600                endif;                                                                                           28/11/22
+  56700                                                                                                                 28/11/22
+  56800                    ygktut =thbidm;                                                                              28/11/22
+  56900                    if thbm10=' ';                                                                               28/11/22
+  57000                    kattut =thbvpr-thbgad;                                                                       28/11/22
+  57100                    leave;                                                                                       28/11/22
+  57200                    endif;                                                                                       28/11/22
+  57300        Enddo;                                                                                                   28/11/22
+  57400        Endsr;                                                                                                   28/11/22
+  57500         //--------------------------------------------------------------------                                  28/11/22
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            27/04/23 14:08:01    HAY400       PAGE   12
+  SOURCE FILE . . . . . . .  EMKLIBP/EMKSRC
+  MEMBER  . . . . . . . . .  EM0510
+  SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0
+                                  * * * *  E N D  O F  S O U R C E  * * * *
