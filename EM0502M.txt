@@ -1,0 +1,392 @@
+  5770WDS V7R4M0  190419                  SEU SOURCE LISTING                            17/04/23 11:44:54    HAY400       PAGE    1
+   2900      FEM502LOG  O  A E           K DISK                                                                         22/06/17
+   3000      FEM1899PT  IF   E           K DISK                                                                         02/12/10
+   3100      FEMK100    IF   E           K DISK                                                                         03/12/10
+   3200      femk100lk  if   e           k disk    rename(remk100:r100lk) prefix(k_)                                    19/10/18
+   3300      FEMK151    IF   E           K DISK                                                                         03/12/10
+   3400      FEM0502MF  IF   E           K DISK                                                                         22/02/11
+   3500      FEMK077L1  IF   E           K DISK                                                                         05/12/10
+   3600      FEMK088A0  IF   E           K DISK                                                                         05/12/10
+   3700      FEM0502F0  O    E           K DISK                                                                         02/12/10
+   3800      FEM0502md  IF   E           K DISK                                                                         19/10/18
+   3801      FEM0502mg  IF   E           k DISK                                                                         30/10/19
+   3900      FEM0502me  IF a E           K DISK                                                                         19/10/18
+   4000      FEM0502FA  IF a E           K DISK                                                                         19/10/18
+   4100      F                                     RENAME(REM502F0:R502FA)                                              19/10/18
+   4200 10470FEMK272L3  IF   E           K DISK                                                                         01/12/13
+   4300      FEMK272A3  IF   E           K DISK                                                                         16/07/14
+   4400      FKIS099PL  IF   E           K DISK                                                                         19/10/18
+   4500      Femk099    IF   E           K DISK                                                                         19/10/18
+   4600      Femk011    IF   E           K DISK                                                                         19/10/18
+   4700      FEMK019    IF   E           K DISK    prefix(k_)                                                           19/10/18
+   4800      D ADE             S             19  4 DIM(31)                                                              05/12/10
+   4900       * EPLDKF PROGRAM PARAMETRELERİ                                                                            25/08/16
+   5000      D DK              S              3  0 DIM(10)                                                              25/08/16
+   5100      D DK1             S              3  0 DIM(10)                                                              25/08/16
+   5200      D DK2             S              3  0 DIM(10)                                                              25/08/16
+   5300       *-------------------------------------------------------------------------                                03/09/08
+   5400      D                SDS                                                                                       09/11/07
+   5500      D  USER                 254    263                                                                         09/11/07
+   5600      D  PGMX                   1     10                                                                         09/11/07
+   5700      D  EKRAN                244    253                                                                         09/11/07
+   5800 10647 *                                                                                                         27/12/13
+   5900 10647D                 DS                  INZ                                                                  27/12/13
+   6000 10647D  SECTAR                 1      8  0                                                                      27/12/13
+   6100 10647D  HAYSBY                 1      4  0                                                                      27/12/13
+   6200 10647D  HAYSBA                 5      6  0                                                                      27/12/13
+   6300 10647D  HAYSBG                 7      8  0                                                                      27/12/13
+   6400 BES30 *                                                                                                         31/01/16
+   6500 BES30D                 DS                  INZ                                                                  31/01/16
+   6600 BES30D  PTPFOR                 1      4  0                                                                      31/01/16
+   6700 BES30D  MHBPTP                 1      2  0                                                                      31/01/16
+   6800 BES30D  MHBFOR                 3      4  0                                                                      31/01/16
+   6900      D                 DS                  INZ                                                                  19/10/18
+   7000      D  GRPKAx                 1      6  0                                                                      19/10/18
+   7100      D  GRPKAP                 1      8  0                                                                      19/10/18
+   7101 10647 *                                                                                                         30/10/19
+   7102 10647d                 ds                  INZ                                                                  30/10/19
+   7103 10647d  bugun                  1      8  0                                                                      30/10/19
+   7104 10647d  yil                    1      4  0                                                                      30/10/19
+   7105 10647d  ay                     5      6  0                                                                      30/10/19
+   7106 10647d  gun                    7      8  0                                                                      30/10/19
+   7107      c                   z-add     1             gun                                                            30/10/19
+   7200       *-------------------------------------------------------------------------                                03/09/08
+   7300      C     *ENTRY        PLIST                                                                                  21/06/04
+   7400      C                   PARM                    PAY               2                                            27/01/11
+   7500      C                   PARM                    PYIL              4                                            09/06/09
+   7600      C                   MOVE      PYIL          YIL               4 0                                          09/06/09
+   7700      C                   MOVE      PAY           AY                2 0                                          09/06/09
+   7800      C                   TIME                    SAAT              6 0                                          04/09/08
+   7900      C                   Z-ADD     4             BRA               2 0                                          05/12/10
+   7901                                                                                                                 30/10/19
+   7902      C     keyem0502mg   KLIST                                                                                  30/10/19
+   7903      C                   KFLD                    xcins                                                          30/10/19
+   7904      C                   KFLD                    bugun                                                          30/10/19
+   7907                                                                                                                 30/10/19
+   8000      C     KEY1          KLIST                                                                                  02/12/10
+   8100      C                   KFLD                    YIL                                                            02/12/10
+   8200      C                   KFLD                    AY                                                             02/12/10
+   8300       * EPLDKF ÇAĞIR                                                                                            25/08/16
+   8400      C                   CALL      'EPLDKF'                                                                     25/08/16
+   8500      C                   PARM      *ZEROS        DK                                                             25/08/16
+   8600      C                   PARM      *ZEROS        DK1                                                            25/08/16
+   8700      C                   PARM      *ZEROS        DK2                                                            25/08/16
+   8809      C*                  READ      em0502mg                               32                                    07/11/19
+   8810      C*    *IN32         ifeq      '0'                                                                          07/11/19
+   8811      C*                  Z-ADD     FORAN         EORAN             5 4                                          07/11/19
+   8812      C*                  else                                                                                   07/11/19
+   8813      C*                  GOTO      SON                                                                          07/11/19
+   8814      C*DP-12322          endif                                                                                  07/11/19
+   8815                                                                                                                 30/10/19
+   8900      C                   SETOFF                                       51                                        02/12/10
+   9000      C     KEY1          SETLL     EM1899PT                                                                     02/12/10
+   9100      C     *IN51         DOWEQ     '0'                                                                          02/12/10
+   9200      C     OKU           TAG                                                                                    02/12/10
+   9300      C     KEY1          READE     REM1899T                               51                                    02/12/10
+   9400      C     *IN51         IFEQ      '0'                                                                          02/12/10
+   9500       *                                                                                                         02/02/14
+   9600      C     FTDVKD        LOOKUP    DK                                     75                                    25/08/16
+   9700      C     *IN75         CABEQ     *ON           OKU                                                            25/08/16
+   9800       * Sözleşme aktarımla başlamış mı kontrolü...                  TLP10470                                    01/12/13
+   9900      C     K100Z0        KLIST                                                                                  01/12/13
+  10000      C                   KFLD                    FTDPAK                                                         02/12/13
+  10100      C                   KFLD                    FTDPNO                                                         02/12/13
+  10200      C                   KFLD                    TEC0                                                           01/12/13
+  10300      C                   KFLD                    ZEY0                                                           01/12/13
+  10400      C                   Z-ADD     0             TEC0              2 0                                          01/12/13
+  10500      C                   Z-ADD     0             ZEY0              3 0                                          01/12/13
+  10600      C     K272L3        KLIST                                                                                  01/12/13
+  10700      C                   KFLD                    FTDPAK                                                         02/12/13
+  10800      C                   KFLD                    FTDPNO                                                         02/12/13
+  10900      C                   KFLD                    TEC0                                                           01/12/13
+  11000      C     K100Z0        CHAIN     EMK100                             98                                        01/12/13
+  11100      C     *IN98         CABNE     '0'           OKU                                                            30/11/18
+  11200       *                                                                                                         09/10/16
+  11300 (OKS)C     HAYPTP        IFEQ      25                                                                           26/10/16
+  11400      C                   SETOFF                                       41                                        19/10/18
+  11500      C     K272L3        setgt     EMK100LK                                                                     19/10/18
+  11600      C     K272L3        readpe    R100LK                                 41                                    19/10/18
+  11700      C                   IF        *IN41='0'AND k_HAYHRK=61                                                     19/10/18
+  11800      C     K272L3        CHAIN     EM0502me                           31                                        19/10/18
+  11900      C     *in31         ifeq      '1'                                                                          19/10/18
+  12000      c                   write     rEM502me                                                                     19/10/18
+  12100      C                   EXSR      cayma_gerial                                                                 19/10/18
+  12200      C                   ENDIF                                                                                  19/10/18
+  12300      C                   GOTO      OKU                                                                          19/10/18
+  12400      C                   ENDIF                                                                                  19/10/18
+  12500 (OKS)C                   ENDIF                                                                                  26/10/16
+  12600       *                                                                                                         09/10/16
+  12601       *DP-12322                                                                                                 06/11/19
+  12602      C                   if        *in98='0' and                                                                06/11/19
+  12603      C                             ((sectar>=20131101 and hayagk<>1) or                                         06/11/19
+  12604      C                             (hayagk=1))                                                                  06/11/19
+  12700      C*    *IN98         IFEQ      '0'                                                                          06/11/19
+  12800      C*    SECTAR        ANDGE     20131101                                                                     06/11/19
+  12900      C     HAYIPY        IFGT      0                                                                            01/12/13
+  13000      C     K272L3        CHAIN     EMK272L3                           98                                        01/12/13
+  13100      C     K272L3        CHAIN     EMK272A3                           70                                        16/07/14
+  13200      C   98              Z-ADD     0             KLNIPY                                                         16/07/14
+  13300      C   70              Z-ADD     0             AKLIPY                                                         16/07/14
+  13400      C     *IN98         IFEQ      '0'                                                                          01/12/13
+  13500      C     *IN70         OREQ      '0'                                                                          16/07/14
+  13600      C     KLNIPY        IFGT      0                                                                            01/12/13
+  13700      C     AKLIPY        ORGT      0                                                                            16/07/14
+  13800 ||   C                   Eval      lText='KLNIPY>0 or AKLIPY>0'                                                 22/06/17
+  13900 ||   C                   Exsr      LogSr                                                                        22/06/17
+  14000      C                   ITER                                                                                   01/12/13
+  14100      C                   ENDIF                                                                                  01/12/13
+  14200      C                   ELSE                                                                                   01/12/13
+  14300 ||   C                   Eval      lText='SECTAR>=20131101, '+                                                  22/06/17
+  14400 ||   C                                   'In EMK272L3 or In EMK272A3 '+                                         22/06/17
+  14500 ||   C                                   'not found -> ITER'                                                    22/06/17
+  14600 ||   C                   Exsr      LogSr                                                                        22/06/17
+  14700      C                   ITER                                                                                   01/12/13
+  14800      C                   ENDIF                                                                                  01/12/13
+  14900      C                   ENDIF                                                                                  01/12/13
+  15000      C                   ENDIF                                                                                  01/12/13
+  15100       *                                                                                                         02/12/10
+  15200      C     KEY100        KLIST                                                                                  02/12/10
+  15300      C                   KFLD                    FTDPAK                                                         02/12/10
+  15400      C                   KFLD                    FTDPNO                                                         02/12/10
+  15402       *DP-12322                                                                                                 07/11/19
+  15403      c     key100        setgt     emk100                                                                       30/10/19
+  15404      c     key100        readpe    remk100                                01                                    30/10/19
+  18003      c                   if        *in01='0'                                                                    30/10/19
+  18004      C     HAYAGK        CABNE     1             OKU                                                            12/05/20
+  18005      c                   movel     haycns        xcins             1                                            30/10/19
+  18006      c                   if        hayptp=25                                                                    30/10/19
+  18007      c                   movel     'O'           xcins                                                          30/10/19
+  18008      c                   endif                                                                                  30/10/19
+  18009                                                                                                                 30/10/19
+  18010      c     keyem0502mg   setgt     em0502mg                                                                     30/10/19
+  18011      c     xcins         readpe    em0502mg                               01                                    30/10/19
+  18012      c   01              iter                                                                                   30/10/19
+  18013                                                                                                                 30/10/19
+  18014      c                   if        *in01='0'                                                                    30/10/19
+  18015      c                   if        fbastar<=bugun and fbittar>=bugun                                            30/10/19
+  18020      c                   z-add     foran         eoran             5 4                                          30/10/19
+  18021      c                   else                                                                                   30/10/19
+  18022      c                   iter                                                                                   30/10/19
+  18023      c                   end                                                                                    30/10/19
+  18025      c                   end                                                                                    30/10/19
+  18026      c                   end                                                                                    30/10/19
+  18027       *DP-12322 --------------------------------------------------------------                                  06/11/19
+  18100      C                   EXSR      HESAP                                                                        02/12/10
+  18200      c                   If        SOZTOP=0                                                                     22/06/17
+  18300 ||   C                   Eval      lText='SOZTOP değeri sıfır..!'                                               22/06/17
+  18400 ||   C                   Exsr      LogSr                                                                        22/06/17
+  18500      c                   EndIf                                                                                  22/06/17
+  18600      C     SOZTOP        CABEQ     0             OKU                                                            06/12/10
+  18700      C                   EXSR      DOLDUR                                                                       02/12/10
+  18800      C                   END                                                                                    02/12/10
+  18900      C                   END                                                                                    02/12/10
+  19000      C     SON           TAG                                                                                    27/07/09
+  19100      C*                  EXSR      ONEOFF                                                                       07/12/18
+  19200      C                   SETON                                        LR                                        18/06/04
+  19300      C     HESAP         BEGSR                                                                                  02/12/10
+  19400      C                   Z-ADD     FTDE01        ADE(1)                                                         02/12/10
+  19500      C                   Z-ADD     FTDE02        ADE(2)                                                         02/12/10
+  19600      C                   Z-ADD     FTDE03        ADE(3)                                                         02/12/10
+  19700      C                   Z-ADD     FTDE04        ADE(4)                                                         02/12/10
+  19800      C                   Z-ADD     FTDE05        ADE(5)                                                         02/12/10
+  19900      C                   Z-ADD     FTDE06        ADE(6)                                                         02/12/10
+  20000      C                   Z-ADD     FTDE07        ADE(7)                                                         02/12/10
+  20100      C                   Z-ADD     FTDE08        ADE(8)                                                         02/12/10
+  20200      C                   Z-ADD     FTDE09        ADE(9)                                                         02/12/10
+  20300      C                   Z-ADD     FTDE10        ADE(10)                                                        02/12/10
+  20400      C                   Z-ADD     FTDE11        ADE(11)                                                        02/12/10
+  20500      C                   Z-ADD     FTDE12        ADE(12)                                                        02/12/10
+  20600      C                   Z-ADD     FTDE13        ADE(13)                                                        02/12/10
+  20700      C                   Z-ADD     FTDE14        ADE(14)                                                        02/12/10
+  20800      C                   Z-ADD     FTDE15        ADE(15)                                                        02/12/10
+  20900      C                   Z-ADD     FTDE16        ADE(16)                                                        02/12/10
+  21000      C                   Z-ADD     FTDE17        ADE(17)                                                        02/12/10
+  21100      C                   Z-ADD     FTDE18        ADE(18)                                                        02/12/10
+  21200      C                   Z-ADD     FTDE19        ADE(19)                                                        02/12/10
+  21300      C                   Z-ADD     FTDE20        ADE(20)                                                        02/12/10
+  21400      C                   Z-ADD     FTDE21        ADE(21)                                                        02/12/10
+  21500      C                   Z-ADD     FTDE22        ADE(22)                                                        02/12/10
+  21600      C                   Z-ADD     FTDE23        ADE(23)                                                        02/12/10
+  21700      C                   Z-ADD     FTDE24        ADE(24)                                                        02/12/10
+  21800      C                   Z-ADD     FTDE25        ADE(25)                                                        02/12/10
+  21900      C                   Z-ADD     FTDE26        ADE(26)                                                        02/12/10
+  22000      C                   Z-ADD     FTDE27        ADE(27)                                                        02/12/10
+  22100      C                   Z-ADD     FTDE28        ADE(28)                                                        02/12/10
+  22200      C                   Z-ADD     FTDE29        ADE(29)                                                        02/12/10
+  22300      C                   Z-ADD     FTDE30        ADE(30)                                                        02/12/10
+  22400      C                   Z-ADD     FTDE31        ADE(31)                                                        02/12/10
+  22500      C                   Z-ADD     0             SOZTOP           19 4                                          02/12/10
+  22600      C                   Z-ADD     0             X                 2 0                                          02/12/10
+  22700      C     1             DO        31            X                                                              02/12/10
+  22800      C                   Z-ADD     0             HESTUT           19 4                                          02/12/10
+  22900      C     K088A         KLIST                                                                                  05/12/10
+  23000      C                   KFLD                    BRA                                                            02/12/10
+  23100      C                   KFLD                    FTDVKD                                                         02/12/10
+  23200      C                   KFLD                    FTDVSN                                                         02/12/10
+  23300      C                   KFLD                    FTDYIL                                                         02/12/10
+  23400      C                   KFLD                    FTDAY                                                          02/12/10
+  23500      C                   KFLD                    X                                                              02/12/10
+  23600      C     ADE(X)        IFGT      0                                                                            02/12/10
+  23700      C                   SETOFF                                       85                                        06/12/10
+  23800      C     K088A         SETGT     EMK088A0                                                                     06/12/10
+  23900      C                   READP     REMK088A                               85                                    06/12/10
+  24000      C     *IN85         IFEQ      '0'                                                                          06/12/10
+  24100      C     HPGORN        DIV       100000        FNISGK           12 8                                          06/12/10
+  24200      C                   END                                                                                    06/12/10
+  24300      C     ADE(X)        MULT      FNISGK        HESTUT                                                         06/12/10
+  24400 BES30 *                    MULT .10       HESTUT           TLP7542                                              31/01/16
+  24500 BES30C*TYP-12327         MULT      .045          HESTUT                                                         04/04/18
+  24600 12327C*                  MULT      .075          HESTUT                                                         04/04/19
+  24601      C                   MULT      EORAN         HESTUT                                                         04/04/19
+  24700      C                   ADD       HESTUT        SOZTOP                                                         02/12/10
+  24800      C                   END                                                                                    02/12/10
+  24900      C                   ENDDO                                                                                  02/12/10
+  25000      C                   ADD       .0050         SOZTOP                                                         06/12/10
+  25100      C                   MOVE      '00'          SOZTOP                                                         06/12/10
+  25200      C                   ENDSR                                                                                  02/12/10
+  25300       *-------------------------------------------------------------------------                                03/12/10
+  25400      C     DOLDUR        BEGSR                                                                                  03/12/10
+  25500      C                   Z-ADD     AY            MHBCAY                                                         03/12/10
+  25600      C                   Z-ADD     YIL           MHBCYL                                                         03/12/10
+  25700      C                   Z-ADD     HAYAGK        MHBAGK                                                         03/12/10
+  25800      C                   Z-ADD     HAYACE        MHBACE                                                         03/12/10
+  25900      C                   Z-ADD     HAYELE        MHBELE                                                         03/12/10
+  26000      C*--                                                                                                       03/12/10
+  26100      C     HAYACE        CHAIN     EMK077L1                           55                                        03/12/10
+  26200      C     *IN55         IFEQ      '0'                                                                          03/12/10
+  26300      C                   Z-ADD     BS1077        MHBAKB                                                         03/12/10
+  26400      C                   Z-ADD     SUB077        MHBASB                                                         03/12/10
+  26500      C                   END                                                                                    03/12/10
+  26600      C                   Z-ADD     HAYTLN        MHBTLN                                                         03/12/10
+  26700      C                   Z-ADD     HAYBOL        MHBBOL                                                         03/12/10
+  26800      C                   Z-ADD     HAYABL        MHBABL                                                         03/12/10
+  26900      C                   Z-ADD     YIL           MHBTZY                                                         03/12/10
+  27000      C                   Z-ADD     AY            MHBTZA                                                         03/12/10
+  27100      C                   Z-ADD     1             MHBTZG                                                         03/12/10
+  27200      C                   Z-ADD     HAYPTP        MHBPTP                                                         03/12/10
+  27300      C                   Z-ADD     HAYFOR        MHBFOR                                                         03/12/10
+  27400      C                   Z-ADD     HAYMNO        MHBMNO                                                         03/12/10
+  27500      C                   MOVE      HAYPAK        MHBPAK                                                         03/12/10
+  27600      C                   Z-ADD     HAYPNO        MHBPNO                                                         03/12/10
+  27700      C                   Z-ADD     HAYTEC        MHBTEC                                                         03/12/10
+  27800      C                   Z-ADD     HAYZEY        MHBZEY                                                         03/12/10
+  27900      C                   Z-ADD     HAYDEV        MHBDEV                                                         03/12/10
+  28000      C                   MOVE      '   '         MHBDOV                                                         03/12/10
+  28100      C                   Z-ADD     0             MHBKUR                                                         03/12/10
+  28200      C                   Z-ADD     1             MHBART                                                         03/12/10
+  28300      C                   Z-ADD     FTDVKD        MHBVPR                                                         06/12/10
+  28400      C                   Z-ADD     0             MHBKMM                                                         03/12/10
+  28500      C                   Z-ADD     0             MHBKMX                                                         03/12/10
+  28600      C                   Z-ADD     0             MHBIDM                                                         03/12/10
+  28700      C                   Z-ADD     0             MHBTHM                                                         03/12/10
+  28800      C                   MOVE      ' '           MHBMUT                                                         03/12/10
+  28900      C                   Z-ADD     1             MHBMHG                                                         03/12/10
+  29000      C                   Z-ADD     AY            MHBMHA                                                         03/12/10
+  29100      C                   Z-ADD     YIL           MHBMHY                                                         03/12/10
+  29200      C                   Z-ADD     0             MHBMT1                                                         03/12/10
+  29300      C                   Z-ADD     0             MHBMT2                                                         03/12/10
+  29400      C                   Z-ADD     0             MHBMX2                                                         03/12/10
+  29500      C                   Z-ADD     0             MHBMT3                                                         03/12/10
+  29600      C                   Z-ADD     0             MHBMX3                                                         03/12/10
+  29700      C                   Z-ADD     SOZTOP        MHBHTU                                                         03/12/10
+  29800      C                   Z-ADD     0             MHBORA                                                         03/12/10
+  29900      C                   MOVE      ' '           MHBIPT                                                         03/12/10
+  30000      C                   MOVE      'F'           MHBM10                                                         03/12/10
+  30100      C                   Z-ADD     SAAT          MHBTIM                                                         03/12/10
+  30200      C                   ADD       FTDVKD        MHBTIM                                                         04/02/11
+  30300 NEXTA**********                                                                                                 28/11/13
+  30400 KOM. **                                                                                                         28/11/13
+  30500       *                                                                                                         28/11/13
+  30600 BES30 *          MHBPTP    IFEQ 21                                                                              31/01/16
+  30700 BES30 *          MHBFOR    ANDEQ27                                                                              31/01/16
+  30800 BES30C     PTPFOR        IFEQ      2127                                                                         31/01/16
+  30900 BES30C     PTPFOR        OREQ      2134                                                                         31/01/16
+  31000      C                   Z-ADD     32            MHBMT3                                                         28/11/13
+  31100      C                   ELSE                                                                                   28/11/13
+  31200      C     MHBAGK        IFEQ      1                                                                            17/12/13
+  31300      C                   Z-ADD     1             MHBMT3                                                         17/12/13
+  31400      C                   ELSE                                                                                   17/12/13
+  31500      C                   Z-ADD     0             MHBMT3                                                         28/11/13
+  31600      C                   ENDIF                                                                                  28/11/13
+  31700      C                   ENDIF                                                                                  17/12/13
+  31800       *                                                                                                         28/11/13
+  31900      C*--                                                                                                       03/12/10
+  32000      C                   Z-ADD     1             MHBVGN                                                         03/12/10
+  32100      C                   Z-ADD     AY            MHBVAY                                                         03/12/10
+  32200      C                   Z-ADD     YIL           MHBVYL                                                         03/12/10
+  32300      C                   SETOFF                                       78                                        03/12/10
+  32400      C     KEY100        SETGT     EMK151                                                                       03/12/10
+  32500      C     KEY100        READPE    REMK151                                78                                    03/12/10
+  32600      C                   Z-ADD     THBMNX        MHBMNX                                                         03/12/10
+  32700      C                   Z-ADD     0             MHBGNO                                                         03/12/10
+  32800      C                   MOVE      'F'           MHBCNS                                                         03/12/10
+  32900      C                   Z-ADD     4             MHBBRA                                                         03/12/10
+  33000      C                   Z-ADD     0             MHBFTX                                                         03/12/10
+  33100      C                   Z-ADD     UDATE         MHBDTX                                                         03/12/10
+  33200      C                   Z-ADD     SAAT          MHBTIX                                                         03/12/10
+  33300      C                   MOVE      'F'           MHBIPT                                                         02/03/11
+  33400      C                   WRITE     REM502F0                                                                     05/12/10
+  33500      C                   ENDSR                                                                                  03/12/10
+  33600       * ------------------------------------------------------------------------                                22/06/17
+  33700       * PY-2289 Akbank Mutabakat - Komisyon Verilmeyenler                                                       22/06/17
+  33800      C     LOGSR         BEGSR                                                                                  22/06/17
+  33900      c                   If        lText<>lTextTemp                                                             22/06/17
+  34000      C                   Monitor                                                                                05/07/17
+  34100      C                   Eval      LCYIL=%INT(PYIL)                                                             05/07/17
+  34200      C                   Eval      LCAY =%INT(PAY)                                                              05/07/17
+  34300      C                   On-Error                                                                               05/07/17
+  34400      C                   Z-add     *YEAR         LCYIL                                                          05/07/17
+  34500      C                   Z-add     UMONTH        LCAY                                                           05/07/17
+  34600      C                   EndMon                                                                                 05/07/17
+  34700      C                   MOVEL     HAYPAK        LPAK                                                           22/06/17
+  34800      C                   Z-ADD     HAYPNO        LPOL                                                           22/06/17
+  34900      C                   Z-ADD     HAYTEC        LTEC                                                           22/06/17
+  35000      C                   Z-ADD     HAYZEY        LZEY                                                           22/06/17
+  35100      C                   MOVEL     PGMX          LPGM                                                           22/06/17
+  35200      C                   MOVEL     USER          LUSER                                                          22/06/17
+  35300      c                   Eval      LTIME=%timeStamp()                                                           22/06/17
+  35400      C                   WRITE     REM502LG                                                                     22/06/17
+  35500      c                   MOVEL     lText         lTextTemp       132                                            22/06/17
+  35600      c                   EndIf                                                                                  22/06/17
+  35700       *                                                                                                         22/06/17
+  35800      C                   MOVEL     *blanks       LPAK                                                           22/06/17
+  35900      C                   Z-ADD     0             LPOL                                                           22/06/17
+  36000      C                   Z-ADD     0             LTEC                                                           22/06/17
+  36100      C                   Z-ADD     0             LZEY                                                           22/06/17
+  36200      C                   Z-ADD     0             LKOD                                                           13/07/17
+  36300      C                   MOVE      *blanks       LTEXT                                                          22/06/17
+  36400      C                   ENDSR                                                                                  22/06/17
+  36500      ***************************************************************************                                19/10/18
+  36600      C     cayma_gerial  begsr                                                                                  19/10/18
+  36700      C                   SETOFF                                       56                                        19/10/18
+  36800      C     K272L3        SETLL     EM0502FA                                                                     19/10/18
+  36900      C     *IN56         DOWEQ     '0'                                                                          19/10/18
+  37000      C     OK0502        TAG                                                                                    19/10/18
+  37100      C     K272L3        READE     R502FA                                 56                                    19/10/18
+  37200      C     *IN56         IFEQ      '0'                                                                          19/10/18
+  37300      C     MHBAGK        CABNE     1             OK0502                                                         19/10/18
+  37400      C     MHBM10        CABEQ     'K'           OK0502                                                         09/11/18
+  37500      **                                                                                                         19/10/18
+  37600      C     MHBART        IFEQ      1                                                                            19/10/18
+  37700      C                   Z-ADD     2             MHBART                                                         19/10/18
+  37800      C                   ELSE                                                                                   19/10/18
+  37900      C                   Z-ADD     1             MHBART                                                         19/10/18
+  38000      C                   END                                                                                    19/10/18
+  38100      C                   Z-ADD     AY            MHBCAY                                                         19/10/18
+  38200      C                   Z-ADD     YIL           MHBCYL                                                         19/10/18
+  38300      C                   Z-ADD     0             MHBCMY                                                         19/10/18
+  38400      C                   Z-ADD     0             MHBCMA                                                         19/10/18
+  38500      C                   Z-ADD     0             MHBCMG                                                         19/10/18
+  38600      C                   MOVEL     'K'           MHBM10                                                         19/10/18
+  38700      C                   TIME                    MHBTIM                                                         19/10/18
+  38800      C                   ADD       1             MHBDTX                                                         19/10/18
+  38900      C                   MOVE      'B'           MHBIPT                                                         19/10/18
+  39000       *                                                                                                         19/10/18
+  39100      C                   Z-ADD     0             MHBISK                                                         19/10/18
+  39200       *                                                                                                         19/10/18
+  39300      C                   WRITE     REM502F0                                                                     19/10/18
+  39400      C                   END                                                                                    19/10/18
+  39500      C                   END                                                                                    19/10/18
+  39600      c                   endsr                                                                                  19/10/18
+  39700      ***************************************************************************                                19/10/18
+                                  * * * *  E N D  O F  S O U R C E  * * * *
