@@ -1,0 +1,1039 @@
+Giden DK Kontrol Listesi - EM6752
+ 
+
+ ATX Projesi 
+  1 FONKSİYONEL TASARIM
+1.1 Kullanıcı Hikayesi Tanımı / Süreç Akışı / Etki Analizi
+1.1.1 Kullanıcı Hikayesi Tanımı
+Fonksiyon Adı	Giden DK Kontrol Listesi
+Katılımcı , Aktörler	İÇ KONTROL VE RİSK YÖNETİMİ
+Amaç	Sonlanan sözleşmelerin ödeme onayları sonrası başka şirkete, katılımcıya, hazineye ya da vergi dairesine giden DK kayıtları için kontrol listesi oluşturulması
+Girdi  Kriterleri	Ekrandan Çalışma tarihi aralığı girilmiş olmalıdır
+Çıkış Koşulu	Ödeme onayı verilmiş ve onay tarihi ekrandan girilen çalışma tarihi aralığında olan kayıtlar için iş kurallarına göre yapılan kontroller sonrası tabloya kayıt eklenmesi/güncellenmesi
+Olay Akışı	1)      Kullanıcı Bi'Tıkla üzerinden Devlet Katkısı menüsüne giriş yapar
+2)      Sonlanan Sözleşme DK kontrol listesi sekmesine gidilir
+3)     Çalışma Tarihi için giriş yapılır ve Çalıştır butonuna basılır
+4)      Batch işlemleri tamamlandıktan sonra işlemi yapan kullanıcı mail ile bilgilendirilecektir. 
+7)      Tabloya yazılan kayıtlar DWH istasyonundan rapor halinde alınabilecektir. 
+İstisnalar / Varsayımlar	
+Özel Gereksinim	
+1.1.2 İş Kartı Bilgileri
+Bu analiz dokümanında yalnızca EM6752-Giden DK Kontrol Listesi oluşturma adımlarının Java dönüşümü detaylandırılacaktır. Program çalışması tamamlandığında kullanıcının AS400 spool'una düşen Liste yeni yapıda Zeka Küpü Platformundan alınabilecektir. Geliştirmesi DWH birimi tarafından yapılacaktır.
+Adım No	İşlem Adımı	İşlemi Yapan Pozisyon	Kullanılan Uygulama Sistemi	İlgili Doküman	Kontrol	İşlem Süresi (Dakika)
+12	DK GÖZETİM RAPORLARI					
+12-1	Haksız DK Ödemeleri Kntrl-Ceza Hesaplama Rap.KR022 	Mevzuat Uyum ve Kontrol BES Uygulamaları
+İç Kontrol 	As400	MENU572-EM6753		
+12-2	MTB. GEÇ SAĞLANAN VADELER İÇİN DK ÖDEME KR020	Mevzuat Uyum ve Kontrol BES Uygulamaları
+İç Kontrol 	As400	MENU572-EM6782CL		
+12-3	Sözleşme çıkış.için DK fon kontrol raporu KR029	Mevzuat Uyum ve Kontrol BES Uygulamaları
+İç Kontrol 	As400	MENU572-EM6781A 		
+12-4	Sonlanan Sözleşmeye DK kontrol listesi-KR008	Mevzuat Uyum ve Kontrol BES Uygulamaları
+İç Kontrol 	As400	MENU572-EM6752	yeni	
+12-5	Sonlanma kontrol listesi-KR019	Mevzuat Uyum ve Kontrol BES Uygulamaları	As400	MENU572-EM6181C	yeni	
+12-6	Kesinti kontrol raporu	Mevzuat Uyum ve Kontrol BES Uygulamaları	As400	MENU572-EM0169RA	yeni-yasal süreler,dk emiri kontroller, bu raporlar yapılmazsa As400 den beslenemez. 	
+12-7	BES Satım Emir Valör Kontrol Raporu	Mevzuat Uyum ve Kontrol BES Uygulamaları	As400	MENU572-EM6781CL		
+1.1.3 Activite Diagramı / Süreç Akışı 
+ANA AKIŞ:
+
+
+DİĞER ŞİRKETLERE AKTARILACAK DKP KAYITLARINI LİSTELEME METODU(LIS752) AKIŞI
+
+
+MÜŞTERİYE GİDEN DKP KAYITLARINI LİSTELEME METODU(LIS753) AKIŞI
+
+HAZİNEYE VE VERGİ DAİRESİNE GİDEN DK KAYITLARINI LİSTELEME METOT (LIS754) AKIŞI : 
+Metot karmaşıklığı azaltmak amacıyla "Hazine" ve "Vergi Dairesi" olarak iki farklı iş akışında ele alınmıştır, akışlar arası geçişler çizimlerde ayrıca belirtilmiştir.
+ 
+
+E400 METOT AKIŞI
+
+
+
+1.1.4 Etki Analizi
+Etkilenen Uygulama	Etkilenen Süreç	Etkilenen Fonksiyon	Açıklama
+ AS400-Bi'Tıkla-Zeka Küpü	Giden DK Kontrol Listesi görüntüleme süreci Bi'Tıkla ve Zeka Küpü platformlarına taşınacaktır.	Giden DK Kontrol Listesi (EM6752) 	 AS400 fonksiyonunun Java dönüşümü yapılarak Bi'Tıkla platformunda konumlandırılacaktır. Program çalıştırıldığında kullanıcının AS400 spooluna düşürülen liste yeni yapıda Zeka Küpünden görüntülenecektir.
+1.2 Kapsam ve Kapsam Dışı Konular
+1.2.1 Kapsam içi konular
+ Giden DK Kontrol Listesi (EM6752PF) programı java dönüşümü kapsam içidir. 
+1.2.2 Kapsam dışı konular
+LIS754 metodunda TETILT program çağırımı ile elde edilen WQTFRK değeri kullanılmadığından iş günü farkı hesaplaması ve parametresi görüş ve onay alınarak kaldırılmıştır.
+LIS754 metodunda P_DEFAULT_RATE(EM0550PF) tablosundan FAIZ ORANI bilgisi okuma adımı faiz oranı bilgisi kullanılmadığından görüş ve onay alınarak kaldırılmıştır.
+LIS754 metodu içerisinde tanımlı bazı parametreler gerek bulunmadığı belirlenerek kaldırılmıştır: DQBSYL, DQBSAY, DQBSGN, DQBSTR, DBTYL, DQBTAY, DQBTGN, DQBTTR,WQO4TR ,WQPAK, WQPNO, WQF752, WQODGN, WQODAY, WQODYL, WQSNO,WQGLTR
+Programın çalışması sonucu oluşturulan rapor analizi kapsam dışıdır. Rapor ayrıca analiz edilmiştir: Giden DK Kontrol Listesi Rapor Analizi - EM6752
+
+1.3 Kabul Kriterleri
+Program Çalışma Tarih Aralığı girişi yapılarak çalıştırıldığında karşı şirket/müşteri/hazine/vergi dairesi'ne giden DK'lar için analiz dokümanında belirtilen kontroller başarı ile tamamlanmalı ve raporlamada kullanılmak üzere DKS_DISTRIBUTED_CONTROL(EM6752PF) tablosuna insert/update işlemi yapılmalıdır. Programın çalışması tamamlandığında ve hata aldığında çalıştıran kullanıcıya ve ortak mail adresine e-posta ile bilgilendirme yapılacaktır.
+
+1.4 İyileşmesi Gereken Konu / Süreç / Fonksiyon
+ Programın çalışması ile ilgili kullanıcının AS400 spooluna düşürülen GİDEN DK KONTROL LİSTESİ yeni yapıda Zeka Küpü platformunda rapor olarak konumlandırılacaktır. Programın çalışması tamamlandığında veya hata aldığında ilgili kullanıcıya bilgilendirme maili iletilecektir. 
+1.5 İş Kuralları 
+Renklendirme Kuralları
+•	Taşınacak tablo (blue)
+o	Taşınacak tablo kolon (orange)
+•	Taşınmayacak tablo (magenta)
+o	Taşınmayacak tablo kolon (green)
+•	Hata/uyarı/bilgi mesajı (red)
+•	Hata Açıklaması kolonu mesajı (ACK) (purple)
+•	İş Kuralları ( İş Birimi) (indigo)  (Her bir kırılımda iş birimi için açıklama ilgili alana yazılacak.)
+•	Analiz içindeki değişkenler (düz siyah)
+•	Metot ismi (turquoise)
+•	Alt Fonksiyon ismi (gold)
+•	Kullanılan PCML Adı (grey)
+•	Ekranlardaki Butonlar (teal)
+•	Ekrandaki değerlerin alan adları (yellow green)
+Ödeme onayları sonrası diğer şirketlere, müşteriye, hazineye ya da vergi dairesine giden devlet katkısı kayıtlarının kontrol listesinin oluşturulmasını sağlamak amacı ile Giden DK Kontrol Listesi ekranı kullanılmaktadır. Bi'Tıkla üzerindeki ekrandan sadece rapor oluşturmak adına tetikleme yapılacaktır. Tetikleyen kullanıcıya rapor bitiğinde mail gönderilecektir. Rapor ise Zeka Küpü platformundan bir sonraki gün alınabilecektir. Zeka Küpünde KRR008 - Giden DK Kontrol Listesi rapor ekranında yine başlangıç bitiş tarihi girilerek rapor alınabilecek.
+Öncelikle ekrandan Çalışılan Tarih bilgisi seçilmelidir. Seçilen tarih aralığında ödeme onayı verilmiş olan sözleşmelerin kayıtları kontrol edilir. Aşağıdaki kontrollerden geçerek ve farklı tablolardan bilgiler elde edilerek rapor oluşturulur.
+1.	Hazine ve Vergi dairesine giden kayıtlar için;
+a.	Haksız ödeme iade tipi alanı kontrol edilir. Bu alanı boş olan kayıtlar rapora dahil edilmektedir.
+b.	DKS ödeme tipi kontrol edilir, yalnızca ödeme tipi T yani toplu DKS olan kayıtlar rapora dahil edilmektedir.
+2.	F(Ferdi), G(GBB), İ(İGES) tiplerine göre rapora sözleşme cinsi(C) yazılır. Sözleşme tipi Grup ve ödeyen tipi Müşteri ise rapora sözleşme cinsi 'G' olarak yazılır. Fakat ödeyen tipi Müşteri değilse İGES kontrolü yapılır. Eğer İGES ise sözleşme cinsi 'İ' değilse 'G' olacaktır.
+3.	Sözleşme varlık kontrolü yapılır. Buna göre sözleşmenin Plan bilgileri rapora yazılır.
+4.	Sözleşmenin son zeyli ve zeyil tarihi rapora Zeyl ve Zeyil tarihi olarak yazılır.
+5.	Emekli olma ve benzeri iptallerde yapılacak kesintilerin tutulduğu tablodan sözleşme bilgileri ile kontrol sağlanır ve sonlanmış ise sözleşmenin sonlanma tarihi(SONLA.TRH.) rapora yazılır.
+6.	DK dönemi, DK nesnesinin ödeme tarih bilgilerinin tutulduğu tabloda kontrol edilir. DK dönemi için Müsteşarlıkça DK'nın Ödendiği Tarih bilgisi rapora DK Geliş tarihi olarak yazılır. Eğer boş ise kaydın transfer tipi kontrol edilir. Eğer Şirket içi veya dışı aktarım ile gelen sözleşme (S) ise ya da ödeme türü sonradan gelen dk dağıtımı ise, DKP tutarlarının yatırıma yönlendirme tablosundan tarih bilgisi alınarak rapora (DK GL.TRH.) yazılır.
+7.	DK ödeme onayı verilen tarih ödeme tarihi(DK ÖD.TRH.) olarak rapora yazılır.
+8.	Günlük fon değerleri tablosundan ilgili fon için DK geliş tarihindeki fon değeri bilgisi kontrol edilerek rapora intikal tarihindeki fon değeri(İNT.FON) olarak, ödeme onayı verildiği tarihteki fon değeri ise rapora ödeme tarihindeki fon değeri(ÖDM.FON) olarak yazılır.
+9.	Günlük gecikme ceza tutarı ile cezai işlem gören sözleşmeler için hesaplanan ceza tutarının toplamı elde edilir ve bu tutar rapora ceza tutarı olarak yazılır. Fakat Hazine ve Vergi dairesine giden DK kayıtları için temerrüt faizi tutarı olarak direk rapora yazılır(CEZA TUTAR).
+10.	Eğer ceza tutarı 0(sıfır) değilse ödeme onayı verilen tarih ceza ödeme tarihi(CZ.ÖD.TRH.) olarak rapora yazılır.
+11.	Eğer başka şirkete ödenen DK kaydı ise ve sözleşme Toplu Gelen DK olarak transfer olmuş ise T/B/A bilgisi 1 olarak değilse 2 olarak rapora yazılır. Eğer müşteriye ödenen DK kaydı ise ve ödeme tipi toplu DKS ise 1 değilse 2 olarak yazılır. Eğer hazineye ya da vergi dairesine ödenen DK kaydı ise ödeme tipi toplu DKS ise 1 fakat toplu DKS değilse kaydı oluşturan program kontrol edilir; buna göre EXCEL İLE GELEN AKTARIM DKP GİRİŞİ- EM0276 ise T/B/A değeri 2 değilse 3 olarak raporda yer alacaktır.    
+12.	Sözleşmenin Başlangıç Tarihi bilgisi rapora Yürürlük tarihi olarak yazılır.
+13.	Sözleşmenin BES sistemine ilk giriş tarihi rapora(SİSTE.İLK.) olarak yazılır.
+14.	Sözleşmenin sonlanma tarihi fon satış tarihi(FON SATIŞ.) olarak rapora yazılır.
+15.	Hakedilmiş DK'nın oranı(HAK.ORN) ve bu oranın DK tutarı ile çarpılarak elde edilen hakediş oranının tutarı(HAK.TUTAR) rapora yazılır.
+16.	Sözleşmenin başlangıcından itibaren hak edilen toplam süre(SÜRE), hak edilmemiş toplam DK tutarı(HAK.EDİLM), 2013 öncesi sözleşmelerin ekstra hakediş yıl süresi(EK SR), ve DK hakediş tarihi(DK BAŞ.TRH.) raporda yer alır.
+17.	Evrak tamamlanma tarihi ilgili tablodan kontrol edilir ve rapora Evrak Tamamlama Tarihi(EVR.TM.TRH.) olarak yazılır.
+
+
+1.	Giden DK Kontrol Listesi programı açılır (Ekran - 1)
+2.	Ekranda yer alan Çalışılan Tarih aralığı varsayılan olarak günün tarihi olarak gelir. Kullanıcı istersen bu tarih aralığını değiştirebilir ( gg/aa/yyyy - gg/aa/yyyy formatında).
+3.	ÇALIŞTIR butonuna tıklandığında akış aşağıdaki gibi devam eder.
+4.	Sorgu ekranında girilmiş olan tarihler kontrol edilir. Hatalı bir formatta girilmişse "Tarih Hatalı" hata mesajı kullanıcı karşısına çıkar. Kapat butonuna tıklandığında ekrandaki değerler boşaltılarak kullanıcı karşısına çıkar. Tarih formatında hata yoksa akış devam eder (Ekran - 2).
+5.	Eğer ekranda girilen Çalışma Tarih aralığında Başlama tarihi (BASTAR) Bitiş tarihinden büyükse (BITTAR) "Çalışma başlama tarihi bitiş tarihinden büyük olamaz" hata mesajı kullanıcı karşısına çıkar.  Kapat butonuna tıklandığında ekrandaki değerler boşaltılarak kullanıcı karşısına çıkar. BASTAR<= BITTAR ise akış devam eder (Ekran - 3 )
+6.	EM0084K PCML'i çağırılır.
+a.	Detayı: 
+EM0084K PCML
+<pcml version="7.0">
+   <!-- RPG program: EM0084K  -->
+   <!-- created: 2022-04-06-11.08.20 -->
+   <!-- source: EMKLIBP/EMKSRC(EM0084K) -->
+   <program name="EM0084K" path="/QSYS.LIB/EMKLIBP.LIB/EM0084K.PGM">
+      <data name="VKDKT" type="char" length="99" usage="inputoutput" />
+   </program>
+</pcml>
+Dönen Değer: VKDPR 
+7.	Dönen VKDPR dizisindeki değerler VKDA dizisine atanır. (Metotlarda kullanılacak)
+8.	KVKLogger ile aşağıdaki alanlar için log kaydı atılır.
+a.	Giriş Tarihi, Giriş Saati, Giriş Yapan Kullanıcı, Giriş Yapılan Ekran, Giriş Yapılan Program.
+9.	DKS_DISTRIBUTED_CONTROL (EM6752PF) tablosundaki veriler silinir. ( Tablo boşaltılır)
+10.	LIS752 metodu çağırılır.
+11.	LIS753 metodu çağırılır.
+12.	LIS754 metodu çağırılır.
+13.	Program sonlandırılır.
+Ek Bilgi : Tabloya kayıt atma işlemlerinde, alanlara özellikle bir değer atanmadıysa default değerler atanacaktır.  Oracle tablolarında DATE tipindeki alanlar için default değer null olmalıdır.
+
+1.5.1 Metotlar
+DİĞER ŞİRKETLERE AKTARILACAK DKP KAYITLARINI LİSTELEME METODU(LIS752)
+DİĞER ŞİRKETLERE AKTARILACAK DKP KAYITLARINI LİSTELEME METODU(LIS752)
+1.	DKS nesnesinde dağıtımı yapılacak kayıtların 'Diğer şirkete aktarılacak DKP' kayıtlarının olduğu tablodaki kayıtlara erişilir. Ödeme onayı verilmiş ve ödeme onay tarihi ekrandan girilen Çalışma tarihi aralığında olan kayıtlar döngü ile tek tek okunur. DKS_DISTRIBUTED_OTHER_COMPANY(EMK752) tablosundan IS_PAYMENT_APPROVAL(ODO752) kolonu 1 olan ve PAYMENT_APPROVAL_DATE(ODY752,ODA752,ODG752) kolonundaki tarih ekrandan girilen Çalışma Tarihi başlangıcına eşit olan kayıttan başlayarak küçükten büyüğe döngü içinde okunur.
+a.	Eğer okunan kaydın PAYMENT_APPROVAL_DATE kolonundaki ödeme onay tarihi ekrandan girilen Çalışma Tarihi bitişinden büyük ise döngü ve metot sonlanır. 
+b.	Sözleşme varlık kontrolü yapılır. Buna göre sözleşmenin Plan bilgileri elde edilir. EMK100(Policy) tablosundan HAYPAK(classCode)=CLASS_CODE(PAK752) ve HAYPNO(policyNo)=POLICY_NO(PNO752) değerleri ile eşleşen en büyük kayda gidilerek okuma yapılır.(Keylist:haypak(classCode), haypno (policyNo), haytec(renewal),hayzey(endorsement), haydev(policyCycleNo), haymno(customerNo))
+i.	Kayıt yoksa döngünün başına gider ve bir sonraki kayda geçilir.
+ii.	Kayıt varsa sözleşmenin HAYPTP(productCode) ve HAYFOR(productSubCode) kolonlarındaki bilgi, EMK090(Plan) tablosunun HTMPTP(productCode) ve HTMFOR(productSubCode) kolonlarına eşit olan kayıt okunur. (Keylist:HTMPTP(productCode), HTMFOR(productSubCode), HTMDEV(policyCycleNo), HTMBKD(branchCode), HTMVKD(FUND_CODE), HTMSNO(COVERAGE_ORDER_NO))
+iii.	Sözleşmenin son zeyli ve zeyil tarihi rapor ara tablosuna Zeyl ve Zeyil tarihi olarak yazılır. Kaydın aşağıdaki değerleri kolonlara atanır.
+Alan Adı Java(AS400)	Kolon Adı	Atanacak Değer
+DKS_DISTRIBUTED_CONTROL.ENDORSEMENT_CODE(WQHRK)	ZEYIL_KOD	EMK100.HAYHRK
+DKS_DISTRIBUTED_CONTROL.ISSUE_DATE(WQTZG,WQTZA,WQTZY)	ZEYIL_TARIH	EMK100.HAYTZG / EMK100.HAYTZA / EMK100.HAYTZY
+iv.	Poliçe tipi belirlemek için kontroller yapılır. F(Ferdi), G(GBB), İ(İGES) tiplerine göre rapor ara tablosuna sözleşme cinsi yazılır. Sözleşme tipi Grup ve ödeyen tipi Müşteri ise rapor ara tablosuna sözleşme cinsi 'G' olarak yazılır. Fakat ödeyen tipi Müşteri değilse İGES kontrolü yapılır. Eğer İGES ise ara tabloda sözleşme cinsi 'İ' değilse 'G' olacaktır. HAYCNS(policyType) kolonundaki bilgi kontrol edilir.
+1.	Eğer 'F' ise DKS_DISTRIBUTED_CONTROL.EGM_POLICY_TYPE(WQCNS) kolonu 'F' olur. 
+2.	Eğer 'G' ise HAYODT(commonCustomerType) kolonundaki değerin 'M' olup olmadığı kontrol edilir, eğer değilse v. adımdan(DKS_DISTRIBUTED_CONTROL.TRUST_FUND_SALES_DATE(DFETYL,DFETAY,DFETGN) kolonuna Null atanır.) devam edilir.
+a.	Eğer 'M' ise DKS_DISTRIBUTED_CONTROL.EGM_POLICY_TYPE kolonu 'G' olur. 
+b.	Eğer 'M' değilse EPLIGE1 PCML'i çağırılır. Bu PCML Policy Management domaininde bulunacaktır. SÖZLEŞME NUMARASINDAN GRUP / İGES / GBB CİNSİ BULUNUR
+i.	Gönderilen değerler: HAYPAK(classCode) , HAYPNO(policyNo), HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)(poliçe tanzim gün/ay/yıl  ifade eder) ve DONGC boşluk(' ') gönderilir.
+ii.	Dönen değerler : DONGC
+iii.	PCML detayı : 
+EPLIGE1
+1.	<pcml version="6.0">                                                    
+   <!-- RPG program: EPLIGE1  -->                                    
+   <!-- created: 2021-03-02-14.21.07 -->                                
+   <!-- source: EMKLIBP/EMKSRC(EPLIGE1) -->    
+   <program name="EPLIGE1" path="/QSYS.LIB/ EMKLIBP.LIB/EPLIGE1.PGM">    
+      <data name="PAK" type="char" length="1" usage="inputoutput" /> 
+      <data name="PNO" type="packed" length="7" precision="0" usage="inputoutput" /> 
+      <data name="GUN" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="AY" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="YIL" type="packed" length="4" precision="0" usage="inputoutput" /> 
+      <data name="DONGC" type="char" length="1" usage="inputoutput" /> 
+   </program>                                                           
+</pcml>
+c.	Dönen DONGC değeri 'İ' ise DKS_DISTRIBUTED_CONTROL.EGM_POLICY_TYPE kolonu 'İ' olur değilse, DKS_DISTRIBUTED_CONTROL.EGM_POLICY_TYPE kolonu 'G' olur.
+v.	DKS_DISTRIBUTED_CONTROL.TRUST_FUND_SALES_DATE(DFETYL,DFETAY,DFETGN) kolonuna Null atanır. 690 ve 691(DK fonları) fonlarının satış tarihidir.
+vi.	Emekli olma ve benzeri iptallerde yapılacak kesintilerin tutulduğu tablodan sözleşme bilgileri ile kontrol sağlanır ve sonlanmış ise sözleşmenin sonlanma tarihi rapor ara tablosuna yazılır.  EMK131O(CollectionClaim) tablosundan sözleşmenin EMK100(Policy) tablosundaki değerleri ile eşleşen kayıt okunur. HAYPAK(classCode) = HOOPAK(CLASS_CODE) , HAYPNO(policyNo) = HOOPOL(POLICY_NO), HAYTEC(renewal)= HOOTEC(renewal), HAYZEY(endorsement) = HOOZEY(endorsement), HAYHRK(endorsementCode) = HOOHRK(ENDORSEMENT_NO)
+1.	Kayıt yoksa DKS_DISTRIBUTED_CONTROL.EXIT_DATE(HOOONG,HOOONA,HOOONY) kolonuna Null atanır. 
+2.	Kayıt varsa DKS_DISTRIBUTED_CONTROL.EXIT_DATE(HOOONG,HOOONA,HOOONY) kolonuna EMK131O tablosundaki HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) kolonları birleştirilerek yazılır ve E400(FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU) alt metodu çalıştırılır.
+vii.	Diğer şirkete aktarılacak DKP kayıtlarının olduğu tablodaki kaydın DK dönemi kontrol edilir.  Döngüdeki kaydın DKS_DISTRIBUTED_OTHER_COMPANY tablosundaki DATA_PERIOD(DON752 gelen DK dönemi) kolonu değeri 0(sıfır) ise aşağıdaki işlemler yapılır, değilse viii. adımdan(Kaydın DK dönemi, DK nesnesinin ödeme tarih bilgilerinin...) devam edilir.
+1.	EGM den gelen kesinleşen DKS nesnesinin yazdırıldığı tabloda ilgili referansa ait olan kayıtlar kontrol edilir. EGM den gelen tahsilat hareket tipi düzenli katkı payı tahsilatı(11) veya ek katkı payı tahsilatı(15) olup durum kodu devlet katkısı hesaplanmasına esas kayıt yani [1] olan kaydın veri dönemi rapor ara tablosuna DK dönemi olarak yazılır. DKS_RECONCILIATION_FINAL(EMK751) tablosundaki REFERENCE_NO(RF0751) alanı kaydın REFERENCE_NO(REF752) kolonundaki değerine eşit olan kayıt aratılarak bulunan en küçük kayıttan başlayacak şekilde döngü tanımlanır.(Keylist:REFERENCE_NO,EGM_ARRIVAL_DATE) Kayıt yoksa döngüye girmeden viii. adımından(Kaydın DK dönemi, DK nesnesinin ödeme tarih bilgilerinin....) devam edilir.
+a.	Okunan kaydın EGM_TRANSACTION_TYPE(HT0751 EGM gelen hareket tipi) kolonundaki değer 11 ya da 15 ise sonraki adımdan devam eder, değilse döngüde bir sonraki kayda geçer.
+b.	Okunan kaydın EGM_STATE_CONT_STATUS_CODE(MKD751 durum kodu listesi) kolonundaki değer '[1]' ise sonraki adımdan devam eder değilse döngüde bir sonraki kayda geçer.
+c.	Okunan kaydın DKS_DISTRIBUTED_OTHER_COMPANY.DATA_PERIOD kolonundaki değer DKS_RECONCILIATION_FINAL.DATA_PERIOD(VD0751 veri dönemi) kolonundaki değer ile güncellenir ve döngüden çıkılır.
+viii.	Kaydın DK dönemi, DK nesnesinin ödeme tarih bilgilerinin tutulduğu tabloda kontrol edilir. DK dönemi için Müsteşarlıkça DK'nın Ödendiği Tarih bilgisi rapor ara tablosunda ilgili kolona(DK Geliş tarihi) yazılır. DKS_DISTRIBUTED_OTHER_COMPANY tablosundaki DATA_PERIOD değeri TREASURY_PAYMENT_DATE(EM0550PA) tablosundaki DATA_PERIOD(MOXDON DK dönemi) kolonunda aratılır.
+1.	Kayıt yoksa DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE(MOXYIL,MOXAY,MOXGUN) kolonu Null olarak güncellenir.
+2.	Kayıt varsa DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE(MOXYIL,MOXAY,MOXGUN) kolonuna TREASURY_PAYMENT_DATE tablosundaki PAYMENT_DATE kolonu yazılır.
+ix.	DK Geliş tarihi boş ise kaydın transfer tipi kontrol edilir. Eğer Şirket içi veya dışı aktarım ile gelen sözleşme (S) ise DKP tutarlarının yatırıma yönlendirme tablosundan tarih bilgisi alınarak rapor ara tablosunda ilgili kolona(DK Geliş tarihi) yazılır.   DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE kolonu Null ise aşağıdaki işlemler yapılır, değilse x. adımdan(WQEGT değişkenine döngüdeki kaydın...) devam edilir.
+1.	SCDate(DKTAR) değişkenine Null atanır.
+2.	DKS_DISTRIBUTED_OTHER_COMPANY tablosundaki kaydın TRANSFER_TYPE(BS4752) kolonundaki değeri 'S' ise aşağıdaki işlemler yapılır, değilse 3. adımdan devam edilir.
+a.	Kaydın POLICY_REFERENCE_NO(MB8752), CLASS_CODE(PAK752), POLICY_NO(PNO52) kolonlarındaki bilgilerin sırasıyla EMK781(StateContCollection) tablosundaki THBFN3(SHORT_REFERENCE_NO), THBPAK(CLASS_CODE), THBPNO(policyNo) kolonları ile eşleşen kayıt okunur.(Keylist: THBFN3(SHORT_REFERENCE_NO), THBPAK(CLASS_CODE), THBPNO(policyNo), THBTEC(RENEWAL), THBVYL(accuraldate), THBVAY(accuraldate), THBVGN(accuraldate), THBM10(collection_type))
+i.	Kayıt yoksa değişkenin değerinde değişiklik yapılmadan 3. adımdan devam edilir. 
+ii.	Kayıt varsa SCDate(DKTAR) değişkenine EMK781 tablosunda bulunan kaydın THBMB9(effective_date) kolonundaki değer atanır.
+3.	DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE kolonu SCDate(DKTAR) değişkenindeki değer ile güncellenir.
+x.	SCAmount(WQEGT) değişkenine döngüdeki kaydın DKS_DISTRIBUTED_OTHER_COMPANY tablosundaki STATE_CONTRIBUTION_AMOUNT(EGT752-OKH ve DKS nesnesinde bulunan kayıtlara ait ödenmesi gereken devlet katkısı tutarıdır) değeri atanır. Bu değişken HAKDK metodunda ve xxi. adımda(Aşağıdaki değerler kolonlara atanır) kullanılacaktır. 
+xi.	Aşağıdaki değişken atamaları yapılır. 
+
+Parametre	Atanacak Değer	Açıklama
+FundNo(WQFON)	EMK090.HTMM6(FUND_CODE)	Plan için 75(Faizli), 76(Faizsiz) değerleri yer alır.
+FundDate(WQFGN,WQFYL,WQFAY)	DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE (MOXYIL,MOXAY,MOXGUN)	DK nın geldiği tarihtir
+xii.	Günlük fon değerleri tablosundan ilgili fon için DK geliş tarihindeki fon değeri bilgisi kontrol edilerek rapor ara tablosuna intikal tarihindeki fon değeri olarak yazılır. EMK170(FUND_PRICE) tablosundaki kolonlarla tanımlanan değişkenlerin değerlerinin eşleştiği kayıt okunur. Sırasıyla FONTNO(fund_code)=FundNo, FONSNO(fund_item_no)='1', FONYIL(fund_date),FONAY(fund_date),FONGUN(fund_date)=FundDate
+1.	Kayıt yoksa DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_EFFECTIVE(WQINTF) kolonuna 0(sıfır) atanır.
+2.	Kayıt varsa DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_EFFECTIVE(WQINTF) kolonuna EMK170.FONDG1(fund_unit_price) kolonundaki değer atanır.
+xiii.	Değişken ataması yapılır.
+Parametre	Atanacak Değer	Açıklama
+FundDate(WQFGN,WQFYL,WQFAY)	DKS_DISTRIBUTED_OTHER_COMPANY.PAYMENT_APPROVAL_DATE (ODY752,ODA752,ODG752)	Ödeme Onay Tarihi
+xiv.	Günlük fon değerleri tablosundan ilgili fon için ödeme onayı verildiği tarihteki fon değeri bilgisi kontrol edilerek rapor ara tablosuna ödeme tarihindeki fon değeri olarak yazılır. EMK170 tablosundaki kolonlarla, FONTNO(fund_code)=FundNo, FONSNO(fund_item_no)='1', FONYIL(fund_date),FONAY(fund_date),FONGUN(fund_date)=FundDate değerlerinin eşleştiği kayıt okunur. 
+1.	Kayıt yoksa DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_PAYMENT(WQODMF) kolonuna 0(sıfır) atanır.
+2.	Kayıt varsa DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_PAYMENT(WQODMF) kolonuna EMK170.FONDG1(fund_unit_price) kolonundaki değer atanır.
+xv.	Günlük gecikme ceza tutarı ile cezai işlem gören sözleşmeler için hesaplanan ceza tutarının toplamı elde edilir. PenaltyAmount(WQCTUT) değişkenine DKS_DISTRIBUTED_OTHER_COMPANY.DEFAULT_AMOUNT(TEM752) + DKS_DISTRIBUTED_OTHER_COMPANY.MTB_DEFAULT_AMOUNT(TMR752) toplamı atanır.
+xvi.	PenaltyAmount(WQCTUT) değeri 0(sıfır) ise PenaltyDate(CQODGN,CQODAY,CQODYL) değişkenine Null atanır, değilse DKS_DISTRIBUTED_OTHER_COMPANY.PAYMENT_APPROVAL_DATE tarihi PenaltyDate(CQODGN,CQODAY,CQODYL) değişkenine atama yapılır.
+xvii.	Kaydın referans numarası rapor ara tablosuna Referans No olarak yazılır. DKS_DISTRIBUTED_OTHER_COMPANY tablosundaki kaydın REFERENCE_NO bilgisi DKS_DISTRIBUTED_CONTROL.REFERENCE_NO(WQREF) kolonuna atanır.
+xviii.	Sözleşme Toplu Gelen DK olarak transfer olmuş ise rapor ara tablosunda T/B/A bilgisi 1 olarak değilse 2 olarak yazılır. DKS_DISTRIBUTED_OTHER_COMPANY tablosundaki kaydın TRANSFER_TYPE(BS4752) kolonundaki değeri 'T' ise DKS_DISTRIBUTED_CONTROL.TRANSFER_TYPE(WQKYN) kolonuna '1' atanır, değilse '2' atanır.
+xix.	HAKDK (Sonlanma Tarihi ve DK Hakediş Tarihi Hesaplama Metodu) alt metodu çalıştırılır.
+xx.	DKS_DISTRIBUTED_CONTROL(EM6752PF) tablosundan CLASS_CODE=HAYPAK(classCode), POLICY_NO=HAYPNO(policyNo), REFERENCE_NO=DKS_DISTRIBUTED_CONTROL.REFERENCE_NO(WQREF) değerleri ile eşleşen ilk kayıt okunur.
+xxi.	DK tutarı, DK Ödeme tarihi, Ceza Tutar, Ceza Ödeme tarihi bilgileri rapor ara tablosunda ilgili kolonlara yazılır. Aşağıdaki değerler kolonlara atanır.
+Alan Adı Java(AS400)	Kolon Adı	Atanacak Değer	Açıklama
+TRANSFER_SC_PAYMENT_AMOUNT(WAEGT)	DK_ODENECEK_TUTAR_BASKA_SIRKET	SCAmount(WQEGT) 	Başka şirkete aktarılacak DK tutarıdır.
+TRANSFER_PAYMENT_DATE(WAODGN,WAODAY,WAODYL)	BASKA_SIRKETE_ODEME_TARIH	DKS_DISTRIBUTED_OTHER_COMPANY.PAYMENT_APPROVAL_DATE	Başka şirkete aktarımı yapılan DK'nın aktarıldığı tarihtir.
+TRANSFER_PENALTY_AMOUNT(WACTUT)	CEZA_TUTAR_TRANSFER	PenaltyAmount(WQCTUT)	DK'nın gecikmeli gönderimi sebebi ile başka şirkete ödenen ceza tutarıdır.
+TRANSFER_PENALTY_PAYMENT_DATE (CAODGN,CAODAY,CAODYL)	TRANSFER_CEZA_TARIH	PenaltyDate(CQODGN,CQODAY,CQODYL)	DK'nın gecikmeli gönderimi sebebi ile başka şirkete ödenen cezanın ödeme tarihidir.
+xxii.	DKS_DISTRIBUTED_CONTROL tablosunda xx. adımda kayıt varsa tablodaki okunan kayıt güncellenir, yoksa tabloya kayıt eklenir.
+DKS_DISTRIBUTED_CONTROL Alanları
+JAVA KOLON ADI 	AS400 KOLON ADI 	KOLON ADI	KAYDEDİLECEK BİLGİ 
+CLASS_CODE	HAYPAK	PREFIKS	EMK100(Policy).HAYPAK(classCode)
+POLICY_NO	HAYPNO	POLICE_NO	EMK100(Policy).HAYPNO(policyNo)
+PRODUCT_CODE	HAYPTP	URUN_KOD	EMK100(Policy).HAYPTP(productCode)
+PRODUCT_SUB_CODE	HAYFOR	URUN_ALT_KOD	EMK100(Policy).HAYFOR(productSubCode)
+ENDORSEMENT_CODE	WQHRK	ZEYIL_KOD	EMK100(Policy).HAYHRK(endorsementCode)
+ISSUE_DATE	WQTZG,WQTZA,WQTZY	ZEYIL_TARIH	EMK100(policy).HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)
+EGM_POLICY_TYPE	WQCNS	SERTIFIKA_CINS	Kod içerisindeki kontrollere göre 'F', 'İ' veya 'G' değeri alabilir.Adım iv.
+TRUST_FUND_SALES_DATE	DFETGN, DFETAY, DFETYL	EMANET_FON_SATIS_TARIH	E400 metodunda atama yapılır, değer bulunamazsa Null değerini alır.E400 başlığı altında Adım 4.c.
+SC_FUND_SALES_DATE	XDKFSE	DK_FON_SATIS_TARIH	E400 metodunda atama yapılır, değer bulunamazsa Null değerini alır.E400 başlığı altında Adım 5.a.ii.
+SC_LAST_FUND_SALES_DATE	XDKFST	DK_SON_FON_SATIS_TARIH	E400 metodunda atama yapılır, değer bulunamazsa Null değerini alır.E400 başlığı altında Adım 5.a.ii.
+EXIT_DATE	HOOONG,HOOONA,HOOONY	CIKIS_TARIH	EMK131O tablosundaki HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) kolonları birleştirilerek yazılır, kayıt yoksa Null değerini alır.Adım vi.
+DEFAULT_ARRIVAL_DATE	MOXGUN,MOXAY,MOXYIL	TEMERRUT_GELIS_TARIH	Kod içerisindeki kontrollere TREASURY_PAYMENT_DATE.PAYMENT_DATEAdım viii.2. ya da EMK781(StateContCollection) tablosunda bulunan THBMB9(effective_date) kolonundakiAdım ix.2.a bilgiyi alır. 
+FUND_UNIT_PRICE_EFFECTIVE	WQINTF	ODEME_FON_FIYAT_VALOR	Kod içerisindeki kontrollere göre 0 veya EMK170.FONDG1(fund_unit_price) alan değerini alabilir.Adım xiii.2.
+FUND_UNIT_PRICE_PAYMENT	WQODMF	ODEME_FON_FIYAT	Kod içerisindeki kontrollere göre 0 veya EMK170.FONDG1(fund_unit_price) alan değerini alabilir.Adım xv.2.
+REFERENCE_NO	WQREF	REFERANS_NO	DKS_DISTRIBUTED_OTHER_COMPANY.REFERENCE_NO değeri atanır.Adım xix.
+TRANSFER_TYPE	WQKYN	TRANSFER_TIP	Kod içerisindeki kontrollere göre '1' ya da '2' değerleri atanır.Adım xx.
+FUND_SALES_DATE	WQFSGN,WQFSAY,WQFSYL	FON_SATIS_TARIH	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 2. ya da 5.b.ii
+VALIDITY_DATE	WQYRGN,WQYRAY,WQYRL	YURURLUK_TARIH	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 7.a.
+VESTING_YEAR_ADD	WQESR	HAKEDIS_YIL_EK	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+VESTING_YEAR	WQSUR	HAKEDIS_YIL	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+VESTING_RATE	WQORN	HAKEDIS_ORAN	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+DESERVED_DATE	DKBSGN,DKBSAY,DKBSYL	HAKEDIS_TARIH	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 9.
+AMOUNT_TL	WQHKTU	HAK_KAZANILAN_GETIRI_TUTAR	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 10.
+DESERVED_AMOUNT	WQHETU	HAK_KAZANILMAYANI_TUTAR	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 10.
+POLICY_PENSION_ENTER_DATE	WQSIGN,WQSIAY,WQSIYL	BES_ILK_YURURLUK_TARIH	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 12.
+TRANSFER_SC_PAYMENT_AMOUNT	WAEGT	DK_ODENECEK_TUTAR_BASKA_SIRKET	DKS_DISTRIBUTED_OTHER_COMPANY.STATE_CONTRIBUTION_AMOUNT değeri atanır.Adım x.
+TRANSFER_PAYMENT_DATE	WAODGN,WAODAY,WAODYL	BASKA_SIRKETE_ODEME_TARIH	DKS_DISTRIBUTED_OTHER_COMPANY.PAYMENT_APPROVAL_DATE değeri atanır.Adım xxiii.
+TRANSFER_PENALTY_AMOUNT	WACTUT	CEZA_TUTAR_TRANSFER	DKS_DISTRIBUTED_OTHER_COMPANY.DEFAULT_AMOUNT(TEM752) + DKS_DISTRIBUTED_OTHER_COMPANY.MTB_DEFAULT_AMOUNT(TMR752) toplamı atanır.Adım xvii. ve xxiii.
+TRANSFER_PENALTY_PAYMENT_DATE	CAODGN,CAODAY,CAODYL	TRANSFER_CEZA_TARIH	Kod içerisindeki kontrollere göre ya Null ya da DKS_DISTRIBUTED_OTHER_COMPANY.PAYMENT_APPROVAL_DATE değeri atanır.Adım xviii. ve xxiii.
+REFUND_DISTRIBUTED_CODE	Yeni kolondur	REFUND_DISTRIBUTED_CODE	Kod içerisinde herhangi bir atama yapılmadığından 1 değeri atanır. BAŞKA ŞİRKETE anlamına gelir.
+INSURED_SC_PAYMENT_AMOUNT	WXEGT 	DK_ODENECEK_TUTAR_KATILIMCI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+INSURED_PAYMENT_DATE	WXODGN,WXODAY,WXODYL	KATILIMCI_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TREASURY_SC_PAYMENT_AMOUNT	WYEGT	DK_ODENECEK_TUTAR_HAZINE	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TREASURY_PAYMENT_DATE	WYODGN,WYODAY,WYODYL 	HAZINE_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TAX_OFFICE_SC_PAYMENT_AMOUNT	WZEGT	DK_ODENECEK_TUTAR_VERGI_DAIRESI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TAX_OFFICE_PAYMENT_DATE	WZODGN,WZODAY,WZODYL	DK_ODENECEK_TUTAR_VERGI_DAIRESI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+INSURED_PENALTY_AMOUNT	WXCTUT	CEZA_TUTAR_KATILIMCI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+INSURED_PENALTY_PAYMENT_DATE	CXODGN,CXODAY,CXODYL	KATILIMCI_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TREASURY_PENALTY_AMOUNT	WYCTUT	CEZA_TUTAR_HAZINE	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TREASURY_PENALTY_PAYMENT_DATE	CYODGN,CYODAY, CYODYL	HAZINE_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TAX_OFFICE_PENALTY_AMOUNT	WZCTUT	CEZA_TUTAR_VERGI_DAIRE	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TAX_OFFICE_PENALTY_PAYMENT_DATE	CZODGN,CZODAY, CZODYL	VERGI_DAIRE_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+Önemli: Kod içerisinde herhangi bir atama yapılmayan kolonlar Update edilmeyecek sadece kayıt eklenirken değer alacak şekilde oluşturulur.
+xxiii.	SCAmount, PenaltyAmount, PenaltyDate değişkenleri temizlenir.
+xxiv.	Döngü(1. adımdaki) bir sonraki kayda geçmek üzere başa döner.
+
+xxv.	Döngü sonlandığında metot sonlanmış olur.
+MÜŞTERİYE AKTARILACAK DKP KAYITLARINI LİSTELEME METODU(LIS753)
+MÜŞTERİYE AKTARILACAK DKP KAYITLARINI LİSTELEME METODU(LIS753)
+1.	DKS_DISTRIBUTED_CUSTOMER (EMK753) tablosundaki PAYMENT_APPROVAL_DATE (ODY753,ODA753,ODG753) alanındaki tarih değeri ile  ekranda girilen çalışma başlama ve bitiş tarihi aralığına eşit olan kayıtlar okunur. DKS nesnesinde dağıtımı yapılacak kayıtların 'Müşteriye aktarılacak DKP' kayıtlarının olduğu tablodaki kayıtlara erişilir. Ödeme onayı verilmiş ve ödeme onay tarihi ekrandan girilen Çalışma tarihi aralığında olan kayıtlar döngü ile tek tek okunur. 
+2.	IS_PAYMENT_APPROVAL (ODO753) alanı 1 olan ( * )  kayıtlar alınır. Kayıt yoksa metot sonlandırılır. Kayıt varsa en küçük kayıttan itibaren bir döngü başlatılır. (KLIST:PAYMENT_APPROVAL_DATE)
+3.	İlgili kaydın CLASS_CODE (PAK753) ve POLICY_NO  (PNO753) değerleri ile POLICY (EMK100) tablosundaki en büyük kayıt okunur. (KLIST : CLASSCODE, POLICYNO, RENEWAL, ENDORSEMENT).Sözleşme varlık kontrolü yapılır. Buna göre sözleşmenin Plan bilgileri elde edilir. 
+a.	Eğer kayıt bulunamazsa döngüdeki bir sonraki kayda geçilir.
+b.	Eğer kayıt bulunursa akış aşağıdaki gibi devam eder.
+4.	POLICY (EMK100) tablosunda bulunan productCode, productSubCode (HAYPTP , HAYFOR)  değerleri DKS_DISTRIBUTED_CONTROL.productCode ve DKS_DISTRIBUTED_CONTROL.productSubCode  alanlarına setlenir. Bu değerler ile Plan (EMK090) tablosundaki productCode, productSubCode (HTMPTP, HTMFOR) alanları okunur ve ilk kayda erişilir.
+5.	DKS_DISTRIBUTED_CONTROL (EM6752PF) tablosundaki ENDORSEMENT_CODE (WQHRK) değerine POLICY tablosundaki endorsementCode (HAYHRK) değeri setlenir.
+6.	POLICY tablosundaki issueDay (HAYTZG), issueMonth (HAYTZA), issueYear (HAYTZY) değerleri birleştirilerek DKS_DISTRIBUTED_CONTROL tablosundaki ISSUE_DATE (WQTZG,WQTZA,WQTZY) değerine setlenir. Sözleşmenin son zeyli ve zeyil tarihi rapor ara tablosuna Zeyil ve Zeyil tarihi olarak yazılır. 
+7.	POLICY.policyType (HAYCNS) değeri kontrol edilir. Poliçe tipi belirlemek için kontroller yapılır. F(Ferdi), G(GBB), İ(İGES) tiplerine göre rapor ara tablosuna sözleşme cinsi yazılır. Sözleşme tipi Grup ve ödeyen tipi Müşteri ise rapor ara tablosuna sözleşme cinsi 'G' olarak yazılır. Fakat ödeyen tipi Müşteri değilse İGES kontrolü yapılır. Eğer İGES ise ara tabloda sözleşme cinsi 'İ' değilse 'G' olacaktır. 
+a.	Eğer policyType değeri 'F' ise DKS_DISTRIBUTED_CONTROL.EGM_POLICY_TYPE (EM6752PF.WQCNS) değeri 'F' setlenir.
+b.	Diğer durumlarda (HAYCNS = G ise)  commonCustomerType  (HAYODT) değeri kontrol edilir.
+i.	POLICY.commonCustomerType (HAYODT) değeri 'M' ise DKS_DISTRIBUTED_CONTROL.EGM_POLICY_TYPE (EM6752PF.WQCNS) değeri 'G' setlenir.
+ii.	Diğer durumlarda  (HAYODT = 'M' değilse ) EPLIGE1 PCML'i çağırılır. SÖZLEŞME NUMARASINDAN GRUP / İGES / GBB CİNSİ BULUNUR
+1.	Gönderilen parametreler : classCode,policyNo, issueDay , issueMonth ,issueYear ,DONGC (boş gönderilir)
+2.	Dönen parametreler : DONGC
+3.	PCML Detayı :  
+EPLIGE1
+<pcml version="6.0">                                                    
+   <!-- RPG program: EPLIGE1  -->                                    
+   <!-- created: 2021-03-02-14.21.07 -->                                
+   <!-- source: EMKLIBP/EMKSRC(EPLIGE1) -->    
+   <program name="EPLIGE1" path="/QSYS.LIB/ EMKLIBP.LIB/EPLIGE1.PGM">    
+      <data name="PAK" type="char" length="1" usage="inputoutput" /> 
+      <data name="PNO" type="packed" length="7" precision="0" usage="inputoutput" /> 
+      <data name="GUN" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="AY" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="YIL" type="packed" length="4" precision="0" usage="inputoutput" /> 
+      <data name="DONGC" type="char" length="1" usage="inputoutput" /> 
+   </program>                                                           
+</pcml>                     
+4.	Dönen DONGC değeri 'İ' ise EGM_POLICY_TYPE (WQCNS) değeri 'İ' olarak setlenir. Diğer durumlarda EGM_POLICY_TYPE (WQCNS) değeri 'G' olarak setlenir.
+8.	DKS_DISTRIBUTED_CONTROL tablosundaki TRUST_FUND_SALES_DATE (DFETYL ,DFETAY ,DFETGN) değeri NULL setlenir. (update ya da insert işlemi için alanlara atama yapılıyor) 
+9.	classCode,policyNo,renewal,endorsement, endorsementCode (EMK100) değerleri ile CollectionClaim (EMK131O) tablosundaki CLASS_CODE , POLICY_NO , renewal, endorsement, ENDORSEMENT_NO (HOOPAK, HOOPOL, HOOTEC, HOOZEY,HOOHRK) alanları okunur. Emekli olma ve benzeri iptallerde yapılacak kesintilerin tutulduğu tablodan sözleşme bilgileri ile kontrol sağlanır ve sonlanmış ise sözleşmenin sonlanma tarihi rapor ara tablosuna yazılır. 
+a.	Kayıt yoksa;
+i.	DKS_DISTRIBUTED_CONTROL.EXIT_DATE  (EMK6752PF.HOOONG,HOOONA, HOOONY) = NULL setlenir.
+b.	Kayıt varsa;
+i.	DKS_DISTRIBUTED_CONTROL.EXIT_DATE  (EMK6752PF.HOOONG,HOOONA, HOOONY) = CollectionClaim.paymentConfirmationDay ,  paymentConfirmationMonth, paymentConfirmationYear birleştirilerek elde edilen değer setlenir.
+ii.	E400 metodu çağırılır.
+10.	Eğer DKS_DISTRIBUTED_CUSTOMER (EMK753) tablosundan okunan ilgili kaydın DATA_PERIOD (DON753) değeri 0 ise; Müşteriye aktarılacak DKP kayıtlarının olduğu tablodaki kaydın DK dönemi kontrol edilir.
+a.	DKS_DISTRIBUTED_CUSTOMER.REFERENCE_NO (REF753 -WQF752 değişkeni) değeri ile DKS_RECONCILIATION_FINAL (EMK751) tablosundaki REFERENCE_NO (RF0751) alanı okunur. En küçük kayıttan itibaren bir döngü başlatılır.(KLIST:REFERENCE_NO,EGM_ARRIVAL_DATE) EGM den gelen kesinleşen DKS nesnesinin yazdırıldığı tabloda ilgili referansa ait olan kayıtlar kontrol edilir. EGM den gelen tahsilat hareket tipi düzenli katkı payı tahsilatı(11) veya ek katkı payı tahsilatı(15) olup durum kodu devlet katkısı hesaplanmasına esas kayıt yani [1] olan kaydın veri dönemi rapor ara tablosuna DK dönemi olarak yazılır. 
+b.	Eğer EGM_TRANSACTION_TYPE (HT0751) değeri 11 ya da 15  değilse ilgili kayıt atlanır. Döngüdeki bir sonraki kayda geçilir. Diğer durumlarda akış devam eder.
+c.	Eğer EGM_STATE_CONT_STATUS_CODE (MKD751) değeri '[1]' değilse bu kayıt atlanır ve bir sonraki kayda geçilir. Diğer durumlarda akış devam eder.
+d.	DKS_DISTRIBUTED_CUSTOMER .DATA_PERIOD = DKS_RECONCILIATION_FINAL .DATA_PERIOD (DON753 = VD0751) olarak setlenir. Bu değer atamasından sonra döngü sonlandırılır.
+11.	Eğer DKS_DISTRIBUTED_CUSTOMER (EMK753) tablosundan okunan ilgili kaydın DATA_PERIOD (DON753) değeri 0 değilse 12.maddedeki döngüye girmeden akış devam eder.
+12.	DATA_PERIOD (DON753) değeri ile TREASURY_PAYMENT_DATE (EM0550PA) tablosundaki DATA_PERIOD (MOXDON) değeri okunur. Kaydın DK dönemi, DK nesnesinin ödeme tarih bilgilerinin tutulduğu tabloda kontrol edilir. DK dönemi için Müsteşarlıkça DK'nın Ödendiği Tarih bilgisi rapor ara tablosunda ilgili kolona(DK Geliş tarihi) yazılır.
+a.	Eğer kayıt yoksa ;
+i.	DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE(MOXGUN,MOXAY,MOXYIL) alanına NULL değeri atanır. 
+b.	Eğer kayıt varsa ;
+i.	DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE(MOXGUN,MOXAY,MOXYIL) alanına TREASURY_PAYMENT_DATE.PAYMENT_DATE  (MOXYIL, MOXAY, MOXGUN) değeri setlenir.
+13.	 DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE değeri kontrol edilir. DK Geliş tarihi boş ise kaydın transfer tipi kontrol edilir. Eğer Şirket içi veya dışı aktarım ile gelen sözleşme (S) ise DKP tutarlarının yatırıma yönlendirme tablosundan tarih bilgisi alınarak rapor ara tablosunda ilgili kolona(DK Geliş tarihi) yazılır.
+a.	DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE NULL ise ;
+i.	SCDate= NULL setlenir.
+ii.	Eğer DKS_DISTRIBUTED_CUSTOMER.DKS_PAYMENT_TYPE (BS4753) değeri 'S' ya da 'C' ise ;
+1.	POLICY_REFERENCE_NO, CLASS_CODE, POLICY_NO (MB8753, PAK753,PNO753) değerleri ile StateContCollection (EMK781) tablosundaki SHORT_REFERENCE_NO , classcode,polıcyNo (THBFN3, THBPAK , THBPNO) alanları okunur. Bulunan kaydın effective_date (THBMB9) değeri SCDate değişkenine setlenir. Kayıt yoksa SCDate= NULL olarak kalır.
+iii.	Eğer DKS_DISTRIBUTED_CUSTOMER.DKS_PAYMENT_TYPE (BS4753) değeri 'S' ya da 'C'  değilse SCDate= NULL olarak kalır.
+iv.	DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE= SCDate olarak setlenir.
+b.	DKS_DISTRIBUTED_CONTROL.DEFAULT_ARRIVAL_DATE =NULL değilse herhangi bir değişiklik yapılmadan akış aşağıdaki gibi devam eder.
+14.	SCAmount= DKS_DISTRIBUTED_CUSTOMER.STATE_CONTRIBUTION_AMOUNT olarak setlenir. (HAKDK metodunda kullanılacak)
+15.	TREASURY_PAYMENT_DATE.PAYMENT_DATE (EM0550PA.MOX), Plan.FUND_CODE (HTMMB6),1 değerleri ile FUND_PRICE (EMK170) tablosundaki fund_date, fund_code, fund_item_no (FONYIL,FONAY,FONGUN,FONTNO,FONSNO) alanları okunur. Günlük fon değerleri tablosundan ilgili fon için DK geliş tarihindeki fon değeri bilgisi kontrol edilerek rapor ara tablosuna intikal tarihindeki fon değeri olarak yazılır.
+a.	Eğer kayıt yoksa;
+i.	DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_EFFECTIVE (WQINTF) =0 setlenir.
+b.	Eğer kayıt varsa;
+i.	DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_EFFECTIVE (WQINTF) = FUND_PRICE. fund_unit_price (EMK170.FONDG1) olarak setlenir.
+16.	Değişen DKS_DISTRIBUTED_CUSTOMER.PAYMENT_APPROVAL_DATE, Plan.FUND_CODE (HTMMB6),1 değerleri ile  FUND_PRICE (EMK170) tablosundaki fund_date, fund_code, fund_item_no (FONYIL,FONAY,FONGUN,FONTNO,FONSNO) alanları tekrar okunur. Günlük fon değerleri tablosundan ilgili fon için ödeme onayı verildiği tarihteki fon değeri bilgisi kontrol edilerek rapor ara tablosuna ödeme tarihindeki fon değeri olarak yazılır.
+a.	Eğer kayıt yoksa;
+i.	DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_PAYMENT (WQODMF) =0 setlenir.
+b.	Eğer kayıt varsa;
+i.	DKS_DISTRIBUTED_CONTROL.FUND_UNIT_PRICE_PAYMENT (WQODMF) = FUND_PRICE.fund_unit_price (EMK170.FONDG1) olarak setlenir.
+17.	PenaltyAmount (WQCTUT) = DKS_DISTRIBUTED_CUSTOMER. DEFAULT_AMOUNT + DKS_DISTRIBUTED_CUSTOMER. MTB_DEFAULT_AMOUNT (EMK753.TEM753 + EMK753.TMR753) olarak setlenir. Günlük gecikme ceza tutarı ile cezai işlem gören sözleşmeler için hesaplanan ceza tutarının toplamı elde edilir. 
+a.	Eğer elde edilen PenaltyAmount değeri  0 ise;
+i.	PenaltyDate= NULL setlenir. 
+b.	Eğer elde edilen PenaltyAmount değeri  0 değilse;
+i.	PenaltyDate= DKS_DISTRIBUTED_CUSTOMER.PAYMENT_APPROVAL_DATE  (EMK753.ODY753) olarak setlenir.
+18.	DKS_DISTRIBUTED_CONTROL.REFERENCE_NO (WQREF) = DKS_DISTRIBUTED_CUSTOMER.REFERENCE_NO (REF753) olarak setlenir. Kaydın referans numarası rapor ara tablosuna Referans No olarak yazılır. 
+19.	İlgili kaydın DKS_DISTRIBUTED_CUSTOMER.DKS_PAYMENT_TYPE (BS7453) değeri 'T' ise DKS_DISTRIBUTED_CONTROL.TRANSFER_TYPE (WQKYN) değeri 1 setlenir. DKS_PAYMENT_TYPE (BS7453) değeri 'T' değilse DKS_DISTRIBUTED_CONTROL.TRANSFER_TYPE (WQKYN) değeri 2 setlenir. Sözleşme Toplu Gelen DK olarak transfer olmuş ise rapor ara tablosunda T/B/A bilgisi 1 olarak değilse 2 olarak yazılır.
+20.	HAKDK metodu çağırılır.
+21.	DKS_DISTRIBUTED_CONTROL tablosuna yeni kayıt atmak veya update etmek için aşağıdaki değerler setlenir. DK tutarı, DK Ödeme tarihi, Ceza Tutar, Ceza Ödeme tarihi bilgileri rapor ara tablosunda ilgili kolonlara yazılır.
+Yeni alan adı	Eski alan adı	Kaydedilecek değer nereden alınacak ?
+CLASS_CODE	HAYPAK	DKS_DISTRIBUTED_CUSTOMER .CLASS_CODE 
+POLICY_NO	HAYPNO	DKS_DISTRIBUTED_CUSTOMER. POLICY_NO
+INSURED_SC_PAYMENT_AMOUNT	WXEGT	DKS_DISTRIBUTED_CUSTOMER.STATE_CONTRIBUTION_AMOUNT
+INSURED_PAYMENT_DATE	WXODGN,WXODAY,WXODYL	DKS_DISTRIBUTED_CUSTOMER.PAYMENT_APPROVAL_DATE  (EMK753.ODY753,ODA753,ODG753) 
+INSURED_PENALTY_AMOUNT	WXCTUT	PenaltyAmount
+INSURED_PENALTY_PAYMENT_DATE	CXODGN,CXODAY,CXODYL	PenaltyDate
+22.	İlgili kaydın CLASS_CODE (PAK753) ve POLICY_NO (PNO753) ve DKS_DISTRIBUTED_CONTROL.REFERENCE_NO(WQREF) değerleri ile DKS_DISTRIBUTED_CONTROL (EM6752PF) tablosundaki CLASS_CODE , POLICY_NO ve REFERENCE_NO alanları okunur ve  ilk kayda erişilir. (KLIST : CLASS_CODE  ,POLICY_NO ,REFERENCE_NO)
+a.	Eğer kayıt varsa bulunan kaydın değerleri yukarıdaki atanan değerler ile DKS_DISTRIBUTED_CONTROL  tablosu UPDATE edilir. Aynı poliçe ve referans numarasına ait daha önce atılmış bir kayıt varsa ayrılarak , aktarılarak yada hazineye iletilen   DK ların  kontrol listesinin tutulduğu tablodaki ilgili kayıt güncellenir.
+i.	DKS_DISTRIBUTED_CONTROL (EM6752PF) tablosuna UPDATE edilecek alanları özetleyecek olursak;
+ii.	DKS_DISTRIBUTED_CONTROL_UPDATE
+Yeni alan adı	Eski alan adı	Kaydedilecek değer nereden alınacak ?
+CLASS_CODE	HAYPAK	21.Maddede bahsedilmiştir
+POLICY_NO	HAYPNO	21.Maddede bahsedilmiştir
+EGM_POLICY_TYPE	WQCNS 	7. Maddede bahsedilmiştir
+PRODUCT_CODE	HAYPTP	4. Maddede bahsedilmiştir
+PRODUCT_SUB_CODE	HAYFOR	4. Maddede bahsedilmiştir
+ENDORSEMENT_CODE	WQHRK 	5. Maddede bahsedilmiştir
+ISSUE_DATE	WQTZG ,WQTZA,WQTZY 	6.Maddede bahsedilmiştir
+EXIT_DATE	HOOONG,HOOONA,HOOONY	9.Maddede bahsedilmiştir
+DEFAULT_ARRIVAL_DATE	MOXGUN,MOXAY,MOXYIL	12. ve 13.Maddede bahsedilmiştir 
+INSURED_SC_PAYMENT_AMOUNT	WXEGT 	21.Maddede bahsedilmiştir
+INSURED_PAYMENT_DATE	WXODGN,WXODAY,WXODYL	21.Maddede bahsedilmiştir
+FUND_UNIT_PRICE_EFFECTIVE	WQINTF	15.Maddede bahsedilmiştir
+FUND_UNIT_PRICE_PAYMENT	WQODMF	16. Maddede bahsedilmiştir
+INSURED_PENALTY_AMOUNT	WXCTUT	21.Maddede bahsedilmiştir
+INSURED_PENALTY_PAYMENT_DATE	CXODGN,CXODAY,CXODYL	21.Maddede bahsedilmiştir
+REFERENCE_NO	WQREF 	18. Maddede bahsedilmiştir
+TRANSFER_TYPE	WQKYN 	19. Maddede bahsedilmiştir
+TRUST_FUND_SALES_DATE	DFETGN,DFETAY,DFETYL	E400 Metodu 3.a.iii maddesinde bahsedilmiştir
+SC_FUND_SALES_DATE	XDKFSE	E400 Metodu - 3 .b.i maddesinde bahsedilmiştir
+SC_LAST_FUND_SALES_DATE	XDKFST	E400 Metodu - 3 .b.ii maddesinde bahsedilmiştir
+VALIDITY_DATE	WQYRGN,WQYRAY,WQYRYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 7.a.
+POLICY_PENSION_ENTER_DATE	WQSIGN,WQSIAY,WQSIYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 12.
+FUND_SALES_DATE	WQFSGN,WQFSAY,WQFSYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 2. ya da 5.b.ii
+VESTING_RATE	WQORN 	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+AMOUNT_TL	WQHKTU	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 10.
+VESTING_YEAR	WQSUR 	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+DESERVED_AMOUNT	WQHETU	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 10.
+VESTING_YEAR_ADD	WQESR 	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+DESERVED_DATE	DKBSGN,DKBSAY,DKBSYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 9.
+b.	Eğer kayıt yoksa yukarda atanan değerler ile birlikte DKS_DISTRIBUTED_CONTROL tablosuna yeni kayıt atılır. Aynı poliçe ve referans numarasına ait daha önce atılmış bir kayıt yoksa ayrılarak , aktarılarak yada hazineye iletilen   DK ların  kontrol listesinin tutulduğu tabloya yeni kayıt atılır. 
+i.	DKS_DISTRIBUTED_CONTROL (EM6752PF) tablosuna INSERT edilecek alanları özetleyecek olursak;
+ii.	DKS_DISTIBUTED_CONTROL_INSERT
+Yeni alan adı	Eski alan adı	Kaydedilecek değer nereden alınacak ?
+CLASS_CODE	HAYPAK	21.Maddede bahsedilmiştir
+POLICY_NO	HAYPNO	21.Maddede bahsedilmiştir
+EGM_POLICY_TYPE	WQCNS 	7. Maddede bahsedilmiştir
+PRODUCT_CODE	HAYPTP	4. Maddede bahsedilmiştir
+PRODUCT_SUB_CODE	HAYFOR	4. Maddede bahsedilmiştir
+ENDORSEMENT_CODE	WQHRK 	5. Maddede bahsedilmiştir
+ISSUE_DATE	WQTZG ,WQTZA,WQTZY 	6.Maddede bahsedilmiştir
+EXIT_DATE	HOOONG,HOOONA,HOOONY	9.Maddede bahsedilmiştir
+DEFAULT_ARRIVAL_DATE	MOXGUN,MOXAY,MOXYIL	12. ve 13.Maddede bahsedilmiştir 
+INSURED_SC_PAYMENT_AMOUNT	WXEGT 	21.Maddede bahsedilmiştir
+INSURED_PAYMENT_DATE	WXODGN,WXODAY,WXODYL	21.Maddede bahsedilmiştir
+FUND_UNIT_PRICE_EFFECTIVE	WQINTF	15.Maddede bahsedilmiştir
+FUND_UNIT_PRICE_PAYMENT	WQODMF	16. Maddede bahsedilmiştir
+INSURED_PENALTY_AMOUNT	WXCTUT	21.Maddede bahsedilmiştir
+INSURED_PENALTY_PAYMENT_DATE	CXODGN,CXODAY,CXODYL	21.Maddede bahsedilmiştir
+REFERENCE_NO	WQREF 	18. Maddede bahsedilmiştir
+TRANSFER_TYPE	WQKYN 	19. Maddede bahsedilmiştir
+TRUST_FUND_SALES_DATE	DFETGN,DFETAY,DFETYL	E400 Metodu 3.a.iii maddesinde bahsedilmiştir
+SC_FUND_SALES_DATE	XDKFSE	E400 Metodu - 3 .b.i maddesinde bahsedilmiştir
+SC_LAST_FUND_SALES_DATE	XDKFST	E400 Metodu - 3 .b.ii maddesinde bahsedilmiştir
+REFUND_DISTRIBUTED_CODE	Yeni kolondur	2 değeri atanır. KATILIMCIYA
+ anlamına gelir.
+TRANSFER_SC_PAYMENT_AMOUNT	WAEGT 	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TRANSFER_PAYMENT_DATE	WAODGN,WAODAY,WAODYL	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.(NULL)
+TREASURY_SC_PAYMENT_AMOUNT	WYEGT 	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TREASURY_PAYMENT_DATE	WYODGN,WYODAY,WYODYL	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.(NULL)
+TAX_OFFICE_SC_PAYMENT_AMOUNT	WZEGT 	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TAX_OFFICE_PAYMENT_DATE	WZODGN,WZODAY,WZODYL	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.(NULL)
+TRANSFER_PENALTY_AMOUNT	WACTUT	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TRANSFER_PENALTY_PAYMENT_DATE	CAODGN,CAODAY,CAODYL	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.(NULL)
+TREASURY_PENALTY_AMOUNT	WYCTUT	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TREASURY_PENALTY_PAYMENT_DATE	CYODGN,CYODAY,CYODYL	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.(NULL)
+TAX_OFFICE_PENALTY_AMOUNT	WZCTUT	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TAX_OFFICE_PENALTY_PAYMENT_DATE	CZODGN,CZODAY,CZODYL	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.(NULL)
+VALIDITY_DATE	WQYRGN,WQYRAY,WQYRYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 7.a.
+POLICY_PENSION_ENTER_DATE	WQSIGN,WQSIAY,WQSIYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 12.
+FUND_SALES_DATE	WQFSGN,WQFSAY,WQFSYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 2. ya da 5.b.ii
+VESTING_RATE	WQORN 	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+AMOUNT_TL	WQHKTU	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 10.
+VESTING_YEAR	WQSUR 	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+DESERVED_AMOUNT	WQHETU	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 10.
+VESTING_YEAR_ADD	WQESR 	HAKDK metodunda atama yapılır, değer bulunamazsa 0(sıfır) değerini alır.HAKDK başlığı altında Adım 9.
+DESERVED_DATE	DKBSGN,DKBSAY,DKBSYL	HAKDK metodunda atama yapılır, değer bulunamazsa Null değerini alır.HAKDK başlığı altında Adım 9.
+c.	Aynı poliçe ve referans numarasına ait daha önce atılmış bir kayıt varsa ayrılarak , aktarılarak yada hazineye iletilen   DK ların  kontrol listesinin tutulduğu tablodaki ilgili kayıt güncellenir.
+23.	 Madde 22 de setlenen INSURED_SC_PAYMENT_AMOUNT, INSURED_PAYMENT_DATE,INSURED_PENALTY_AMOUNT, INSURED_PENALTY_PAYMENT_DATE alanları diğer metotlarda kullanılabileceği için CLEAR edilir.
+24.	Kayıtlar bitene kadar döngüdeki bir sonraki kayda geçilir.
+25.	Metot sonlandırılır.
+
+HAZİNEYE VE VERGİ DAİRESİNE GİDEN DK KAYITLARINI LİSTELEME METODU (LIS754) 
+Hazineye ve Vergi Dairesine Giden DK Kayıtlarını Listeleme Metodu
+HAZİNEYE GİDEN DK LİSTESİ OLUŞTURMA ADIMLARI :
+1.	ÖDEME KANALI PARAMETRESİ TUTULUR VE "HAZİNE" ANLAMINA GELEN 0 DEĞERİ ATANIR.
+a.	WQKNL parametresi = ‘0‘ atanır. 
+2.	HAZİNEYE GİDEN DK LİSTESİNİN GİRİLEN ÇALIŞMA TARİH ARALIĞI KRİTERİNE UYGUN OLARAK OLUŞTURULMASI İÇİN BİR DÖNGÜ BAŞLATILIR. WQKNL parametresine atanan değer ve kriter giriş ekranında Çalışma Tarih aralığı alanında girilen başlangıç tarihi değerleri ile EMK754L6(DKS_DISTRIBUTED_TREASURY(EMK754) tablosunun logical file'ıdır ve sıralaması IS_PAID_TO_TAX_OFFICE(KNL754), PAYMENT_APPROVAL_DATE(ODY754,ODA754,ODG754) alanlarına göre yapılır.) tablosunda IS_PAYMENT_APPROVAL (ODO754) kolonu ‘1’e eşit  olan en küçük kayda erişilir ve bu kayıttan itibaren okuyan bir döngüye başlanır. Eşleşen tüm kayıtlar ele alındığında döngüden çıkılacak ve VERGİ DAİRESİNE GİDEN DK LİSTESİ OLUŞTURMA ADIMLARI'ndan devam edilecektir.
+a.	KAYDIN OPERASYON ÖDEME ONAY TARIHI EKRAN-1'DE ÇALIŞMA TARIH ARALIĞI ALANINDA GİRİLEN BİTİŞ TARİHİNDEN BÜYÜK ISE DÖNGÜ SONLANDIRILIR ve VERGİ DAİRESİNE GİDEN DK LİSTESİ OLUŞTURMA ADIMLARINDAN DEVAM EDİLİR.
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE(ODY754,ODA754,ODG754) değeri ile ve Ekran-1’de bulunan Çalışma Tarih Aralığı alanında girilen bitiş tarihi değerinden büyük mü kontrol edilir, büyük ise döngü sonlandırılır. Değil ise kontrollere aşağıdaki gibi devam edilir.
+b.	HAKSIZ İADE ÖDEME TIPI ALANI KONTROL EDILIR. BU ALANDA V - TOPLU DKS DEN GELEN İADE OLAN VADELER ,I - FON SATARAK VADE İADESİ , H - MANUAL TESPİT EDİLEN HAKSIZ ÖDEMELER ANLAMINA GELMEKTEDIR. 
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).REFUND_UNFAIR_TYPE(TUR754) alanı boş değil ise kayıt atlanır ve eşleşen bir sonraki kayıt ele alınmak üzere döngünün başına dönülür. Boş ise aşağıdaki kontrolle devam edilir.
+c.	DKS ÖDEME TİPİ KONTROL EDILIR, YALNIZCA ÖDEME TİPİ T: TOPLU DKS OLAN KAYITLAR ELE ALINIR.
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).DKS_PAYMENT_TYPE_PRG(BS4754) alanı T’ye eşit değil ise kayıt atlanır ve eşleşen bir sonraki kayıt ele alınmak üzere döngünün başına dönülür. Eşit ise aşağıdaki gibi devam edilir.
+d.	SÖZLEŞME VARLIK KONTROLÜ YAPILIR.  
+i.	CLASS_CODE(PAK754) ve POLICY (PNO754) değerleri ile eşleşen en büyük kaydı okumak üzere EMK100(policy) (pf tablodur, key : haypak(classCode), haypno (policyNo), haytec(renewal),hayzey(endorsement), haydev(policyCycleNo), haymno(customerNo)) tablosundaki en büyük kaydı okumak üzere varlık kontrolü yapılır.
+1.	Eşleşme bulunamazsa kayıt atlanır, EMK754L6(DKS_DISTRIBUTED_TREASURY(EMK754) tablosunun logical file'ıdır) tablosunda eşleşen bir sonraki kayıt ele alınmak üzere döngünün başına dönülür.
+2.	Eşleşme bulunursa erişilen kayıt okunur ve kontrollere aşağıdaki gibi devam edilir ;
+e.	PLAN BİLGİLERİ ELDE EDİLİR.
+i.	EMK100(policy).HAYPTP(productCode) ve HAYFOR(productSubCode) değerleri ile EMK090(Plan) (pf tablodur, key : HTMPTP(productCode), HTMFOR(productSubCode), HTMDEV(policyCycleNo), HTMBKD(branchCode), HTMVKD(FUND_CODE), HTMSNO(COVERAGE_ORDER_NO))  tablosunda eşleşen ilk kayda erişilir ve kayıt okunur.
+f.	RAPORLAMADA KULLANILMAK ÜZERE RAPOR ARA TABLO ALANLARINA DEĞER ATAMASI YAPILIR. DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo alanlarına aşağıdaki değer atamaları yapılır :
+Alan Adı Java(As400)	Kolon Adı	Atanacak Değer
+ENDORSEMENT_CODE(WQHRK)	ZEYIL_KOD	EMK100(policy).HAYHRK(endorsementCode)
+ISSUE_DATE(WQTZG,WQTZA,WQTZY merge into column)	ZEYIL_TARIH	EMK100(policy).HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)
+g.	FERDİ POLİÇE İSE RAPOR ARA TABLOSU SERTİFİKA_CİNS KOLONUNA F DEĞERİ ATANIR.
+i.	EMK100(policy).HAYCNS(policyType) değeri ‘F’ye eşit ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'F' atanır.
+h.	GRUP POLİÇESİ İSE ÖDEYEN TİPİ KONTROL EDİLİR.
+i.	EMK100(policy).HAYCNS(policyType) değeri ‘G’ye eşit ise;
+1.	ÖDEYEN TIPI MÜŞTERI ISE YANI SIGORTALI VE SIGORTA ETTIREN AYNI KIŞI ISE POLIÇE CINSI PARAMETRESINE G(GRUP) ATANIR.
+a.	EMK100(policy).HAYODT(commonCustomerType) 'M'ye eşit ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'G' atanır.
+2.	ÖDEYEN TIPI MÜŞTERI DEĞIL ISE YANI SIGORTALI VE SIGORTA ETTIREN AYNI KIŞI DEĞIL ISE ; IGES SÖZLEŞME OLMA DURUMU KONTROL EDILIR. SÖZLEŞME CINSI BILGISI ELDE EDILIR.
+a.	EMK100(policy).HAYODT(commonCustomerType) 'M’ye eşit değil ise HAYPAK(classCode), HAYPNO(policyNo), HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear) değerleri ile SÖZLEŞMENIN IGES-GBB-FERDİ OLMA DURUMUNU BULMAYA YARAYAN EPLIGE1 PCML çağırılır ve pcml'den dönen DONGC değeri kontrol edilir.
+b.	EPLIGE1 PCML :
+c.	EPLIGE1
+<pcml version="6.0">                                                    
+   <!-- RPG program: EPLIGE1  -->                                    
+   <!-- created: 2021-03-02-14.21.07 -->                                
+   <!-- source: EMKLIBP/EMKSRC(EPLIGE1) -->    
+   <program name="EPLIGE1" path="/QSYS.LIB/ EMKLIBP.LIB/EPLIGE1.PGM">    
+      <data name="PAK" type="char" length="1" usage="inputoutput" /> 
+      <data name="PNO" type="packed" length="7" precision="0" usage="inputoutput" /> 
+      <data name="GUN" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="AY" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="YIL" type="packed" length="4" precision="0" usage="inputoutput" /> 
+      <data name="DONGC" type="char" length="1" usage="inputoutput" /> 
+   </program>                                                           
+</pcml>                            
+d.	DONGC değeri 'İ'ye eşit ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'İ' atanır
+e.	DONGC değeri 'İ'ye eşit değil ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'G' atanır.
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRUST_FUND_SALES_DATE(DFETGN, DFETAY, DFETYL) = NULL atanır. 
+j.	SÖZLEŞME SONLANMA TARİHİ BİLGİSİ ELDE EDİLİR.
+i.	EMK100(policy).HAYPAK(classCode), HAYPNO(policyNo), HAYTEC(renewal), HAYZEY(endorsement), HAYHRK(endorsementCode) değerleri ile EMK131O7(EMK131O(CollectionClaim) tablosunun logical file'ıdır ve sıralaması HOOPAK(CLASS_CODE), HOOPNO(POLICY_NO), HOOTEC(renewal), HOOZEY(endorsement), HOOHRK(ENDORSEMENT_NO) alanlarına göre yapılır.) tablosunda eşleşen ilk kayda erişmek üzere kontrol gerçekleştirilir.
+1.	Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).EXIT_DATE(HOOONG(sonlanma günü), HOOONA(sonlanma ayı) ve HOOONY(sonlanma yılı) merge into column) alanına 'Null' değeri atanır.
+2.	Kayıt bulunursa; erişilen kayıt okunur, DKS_DISTRIBUTED_CONTROL(EM6752PF).EXIT_DATE alanına EMK131O(CollectionClaim).HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) alan değerleri birleştirilerek atanır ve FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodu çalıştırılır.
+k.	KAYDIN "DKP HAZINEYE İADE EDILECEK TUTARLAR" TABLOSUNDAKI DK DÖNEMI BOŞ ISE, DEĞER ATAMASI YAPMAK ÜZERE EGM'DEN GELEN KESINLEŞEN DKS(DEVLET KATKISI NESNESI) NESNESININ YAZDIRILDIĞI TABLODA KONTROLLER GERÇEKLEŞTIRILIR. DOĞRU DÖNEM BILGISINE ULAŞMAK IÇIN ILGILI REFERANSA AIT TAHSILAT TIPI "DÜZENLI KATKI PAYI TAHSILATI" VEYA "EK KATKI PAYI TAHSILATI" OLAN, DURUM KODU 1 OLAN ILK KAYIT TESPIT EDILMELIDIR.
+ Kaydın DKS_DISTRIBUTED_TREASURY(EMK754).DATA_PERIOD(DON754) alan değeri 0’a eşit ise ;
+i.	EGM DEN GELEN KESINLEŞEN DKS(DEVLET KATKISI NESNESI)'NIN YAZDIRILDIĞI TABLODAKI ILGILI REFERANSA AIT OLAN KAYITLAR EGM'DEN GELIŞ TARIHINE GÖRE SIRALANARAK EN KÜÇÜK KAYITTAN ITIBAREN KONTROL EDILIR. DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri ile EMK751L3(DKS_RECONCILIATION_FINAL(EMK751) tablosunun logical file'ıdır ve sıralaması REFERENCE_NO(RF0751), EGM_ARRIVAL_DATE(GLY751, GLA751, GLG751) alanlarına göre yapılır.)tablosundaki eşleşen en küçük kayda erişmek üzere kontrol gerçekleştirilir. Kayıt bulunduğu sürece aşağıdaki döngü işletilir, eşleşen tüm kayıtlar ele alındığında bu döngüden çıkılmalı ve "ELDE EDILEN DK DÖNEMI DEĞERI ILE DK NESNESININ ÖDEME TARIHLERININ TUTULDUĞU TABLO KONTROL EDILIR" maddesinden devam edilmelidir :
+1.	EGM'DEN GELEN TAHSILAT HAREKET TIPI KONTROL EDILIR DÜZENLI KATKI PAYI TAHSILATI(11) VEYA EK KATKI PAYI TAHSILATI(15) OLMALIDIR.(GevDeğerListesi:16) 
+a.	Bulunan kaydın DKS_RECONCILIATION_FINAL(EMK751).EGM_TRANSACTION_TYPE(HT0751) alan değeri 11 veya 15’e eşit mi kontrol edilir;
+i.	Eşit değil ise; kayıt atlanır DKS_RECONCILIATION_FINAL(EMK751) tablosundan yeni bir kayıt okumak üzere döngünün başına dönülür.
+ii.	Eşit ise; kontrollere aşağıdaki gibi devam edilir.
+2.	DURUM KODU KONTROLÜ YAPILIR, DEVLET KATKISI HESAPLANMASINA ESAS KAYIT([1]) OLMALIDIR, 1 DIŞINDAKI DURUM KODLARI HATALI DURUMLARI IÇERIR.(GevDeğerListesi:26).
+a.	Bulunan kaydın DKS_RECONCILIATION_FINAL(EMK751).EGM_STATE_CONT_STATUS_CODE(MDK751) alan değeri [1] ’e eşit mi kontrol edilir;
+i.	Eşit değil ise ; kayıt atlanır DKS_RECONCILIATION_FINAL(EMK751) tablosundan yeni bir kayıt okumak üzere döngünün başına dönülür.
+ii.	Eşit ise ; aşağıdaki gibi devam edilir.
+3.	"DKP HAZINEYE İADE EDILECEK TUTARLAR" TABLOSUNDAKI DK DÖNEMI ALANINA "DKP EGM'DEN GELENLER" TABLOSUNDAN ELDE EDILEN VERI DÖNEMI DEĞERI ATANIR.
+a.	DKS_DISTRIBUTED_TREASURY(EMK754).DATA_PERIOD(DON754) alanına bulunan kaydın DKS_RECONCILIATION_FINAL(EMK751).DATA_PERIOD(VD0751) değeri atanır ve döngü sonlandırılır. Aşağıdaki madde ile devam edilir.
+l.	ELDE EDILEN DK DÖNEMI DEĞERI ILE DK NESNESININ ÖDEME TARIHLERININ TUTULDUĞU TABLO KONTROL EDILIR.
+i.	DATA_PERIOD(DON754) değeri ile TREASURY_PAYMENT_DATE(EM0550PA) tablosu DATA_PERIOD(MOXDON) alanında eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+1.	Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE(MOXGUN,MOXAY,MOXYIL) alanına 'Null' değeri atanır. 
+2.	Kayıt bulunursa; TREASURY_PAYMENT_DATE(EM0550PA) tablosu PAYMENT_DATE(MOXYIL,MOXAY,MOXGUN) alan değeri okunur ve DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE(MOXGUN,MOXAY,MOXYIL) alanına atanır ve kontrollere aşağıdaki gibi devam edilir.  
+m.	DK'NIN GELDİĞİ TARIH KONTROL EDILIR. 
+i.	 DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE değeri kontrol edilir, NULL ise;
+1.	SCDate =Null atanır, .
+2.	ÖDEME TÜRÜ KONTROL EDILIR, SONRADAN GELEN DK DAĞITIMI İSE, SCDate DEĞERİ DKP TUTARININ YATIRIMA TAHSİLAT TABLOSUNDAN ALINIR. Kaydın DKS_DISTRIBUTED_TREASURY(EMK754).DKS_PAYMENT_TYPE_PRG(BS4754) alan değeri 'S’ye eşit ise ;
+a.	DKS_DISTRIBUTED_TREASURY(EMK754).POLICY_REFERENCE_NO(MB8754), CLASS_CODE(PAK754), POLICY_NO(PNO754) değerleri ile EMK781L4(EMK781(StateContCollection) tablosunun logical file'ıdır ve sıralaması THBFN3(SHORT_REFERENCE_NO), THBPAK(CLASS_CODE), THBPNO(policyNo), THBTEC(RENEWAL), THBVYL(accuraldate), THBVAY(accuraldate), THBVGN(accuraldate), THBM10(collection_type) alanlarına göre yapılır)tablosunda eşleşen ilk kayıt okunur.
+i.	Kayıt yoksa ; herhangi bir aksiyon alınmadan 3.maddeden devam edilir. 
+ii.	Kayıt varsa ; SCDate parametresine EMK781(StateContCollection).THBMB9(effective_date ) alan değeri atanır.
+3.	 DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE alan değeri SCDate değeri ile güncellenir. Aşağıdaki parametre değer atamaları ile devam edilir.
+ii.	 DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE değeri NULL’a eşit değil ise; aşağıdaki parametre değer atamaları ile devam edilir.
+n.	Aşağıdaki parametre değer atamaları yapılır:
+o.	
+Parametre	Atanacak Değer
+SCAmount	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_AMOUNT(ODM754)
+FundNo	EMK090(Plan).HTMMB6(FUND_CODE)
+FundDate	DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE 
+p.	DK'NIN GELDİĞİ TARIHE AİT GÜNLÜK FON DEĞERI ELDE EDILIR.
+i.	FundDate, FundNo, "1"  değerleri ile EMK170L1(EMK170(FUND_PRICE) tablosunun logical file'ıdır ve sıralaması FONYIL(fund_date), FONAY(fund_date), FONGUN(fund_date), FONTNO(fund_code), FONSNO(fund_item_no) alanlarına göre yapılır.) tablosunda eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+1.	GÜNLÜK FON DEĞERI GIRILMEMIŞSE 0 OLARAK ALINIR ; Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_EFFECTIVE(WQINTF) alanına '0' değeri atanır.
+2.	GÜNLÜK FON DEĞERI GIRILMIŞSE OKUNUR ; Kayıt bulunursa ; DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_EFFECTIVE(WQINTF) alanına parametresine EMK170(FUND_PRICE).FONDG1(fund_unit_price) değeri atanır.
+q.	Aşağıdaki parametreye operasyon ödeme onay tarihi değerleri atanır:
+Parametre	Atanacak Değer
+FundDate	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE (ODY754,ODA754,ODG754)
+r.	OPERASYON ÖDEME ONAY TARIHINE AIT GÜNLÜK FON DEĞERI ELDE EDILIR.
+i.	FundDate, FundNo, "1" parametre değerleri ile EMK170L1(EMK170(FUND_PRICE) tablosunun logical file'ıdır ve sıralaması FONYIL(fund_date), FONAY(fund_date), FONGUN(fund_date), FONTNO(fund_code), FONSNO(fund_item_no) alanlarına göre yapılır.) tablosunda eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+1.	GÜNLÜK FON DEĞERİ GİRİLMEMİŞSE ; Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_PAYMENT(WQODMF) alanına 0 değeri atanır.
+2.	GÜNLÜK FON DEĞERİ GİRİLMİŞSE; Kayıt bulunursa ;DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_PAYMENT(WQODMF) alanına EMK170(FUND_PRICE).FONDG1(fund_unit_price) değeri atanır.
+s.	GECIKME FAIZI KONTROL EDILIR. 
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754) değeri 0'a eşit ise; aşağıdaki parametre değer atamaları yapılır;
+Parametre	Atanacak Değer
+PenaltyDate (format : yyyyaagg)	Null
+ii.	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754)  değeri 0'a eşit değil ise; aşağıdaki parametre değer atamaları yapılır;
+Parametre	Atanacak Değer
+ PenaltyDate	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE (ODY754,ODA754,ODG754)
+t.	REFERANS NUMARASI ELDE EDİLİR.
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).REFERENCE_NO(WQREF) alanına DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri atanır.
+u.	ÖDEME TİPİ KONTROL EDİLİR VE RAPORLAMADA KULLANILMAK ÜZERE TRANSFER TİPİ BELİRLENİR..
+i.	ÖDEME TİPİ TOPLU DKS İSE ; DKS_DISTRIBUTED_TREASURY(EMK754).DKS_PAYMENT_TYPE_PRG(BS4754) alanı T'ye eşit ise ;
+1.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRANSFER_TYPE(WQKYN) alanına '1' değeri atanır.
+ii.	ÖDEME TİPİ TOPLU DKS DEĞİL İSE ; DKS_DISTRIBUTED_TREASURY(EMK754).DKS_PAYMENT_TYPE_PRG(BS4754) alanı T'ye eşit değil ise ;
+1.	KAYDI YARATAN PROGRAM KONTROL EDİLİR VE RAPORLAMADA KULLANILMAK ÜZERE TRANSFER TİPİ BELİRLENİR..
+a.	DKS_DISTRIBUTED_TREASURY(EMK754).RECORDING_PROGRAM(YPG754) alan değeri 'EM0276' ya eşit ise;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRANSFER_TYPE(WQKYN) alanına '2' değeri atanır.
+b.	DKS_DISTRIBUTED_TREASURY(EMK754).RECORDING_PROGRAM(YPG754) alan değeri 'EM0276' ya eşit değil ise;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRANSFER_TYPE(WQKYN) alanına '3' değeri atanır.
+v.	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) Metodu çalıştırılır.
+w.	EMK100(policy).HAYPAK(classCode), HAYPNO(policyNo) ve DKS_DISTRIBUTED_CONTROL(EM6752PF).REFERENCE_NO(WQREF) değerleri ile DKS_DISTRIBUTED_CONTROL(EM6752PF, key : CLASS_CODE(HAYPAK), POLICY_NO(HAYPNO), REFERENCE_NO(WQREF))  tablosunda eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+x.	DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo alanlarına aşağıdaki gibi değer ataması yapılır. 
+Alan Adı Java(As400)	Kolon Adı	Atanacak Değer
+TREASURY_SC_PAYMENT_AMOUNT (WYEGT)	DK_ODENECEK_TUTAR_HAZINE	SCAmount parametre değeri atanır. 
+TREASURY_PAYMENT_DATE (WYODGN,WYODAY, WYODYL merge into column)	HAZINE_ODEME_TARIH	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE (ODY754,ODA754,ODG754)
+TREASURY_PENALTY_AMOUNT (WYCTUT)	HAZİNE CEZA TUTARI	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754) parametre değeri atanır.
+TREASURY_PENALTY_PAYMENT_DATE (CYODGN,CYODAY, CYODYL merge into column)	HAZINE_CEZA_TARIH	PenaltyDate parametre değeri atanır.
+y.	RAPOR ARA TABLOSUNDA İLGİLİ SÖZLEŞME VAR İSE, TABLODA GÜNCELLENİR. DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo kontrolünde eşleşen kayıt bulunabildi ise ;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF) tablosu update edilir,
+ii.	DKS_DISTRIBUTED_CONTROL_Update
+Kod içerisindeki kontroller sonucunda update edilecek tablo alanlarından bazılarına değer ataması bu aşamaya gelmeden önce yapılmıştır, bütünsellik açısından aşağıda detaylandırılmıştır.
+JAVA KOLON ADI 	AS400 KOLON ADI 	KOLON ADI	KAYDEDİLECEK BİLGİ 
+CLASS_CODE	HAYPAK	PREFIKS	EMK100(policy).HAYPAK(classCode)
+POLICY_NO	HAYPNO	POLICE_NO	EMK100(policy).HAYPNO(policyNo)
+EGM_POLICY_TYPE	WQCNS	SERTIFIKA_CINS	Kod içerisindeki kontrollere göre F, İ veya G değeri alabilir.
+PRODUCT_CODE	HAYPTP	URUN_KOD	EMK100(policy).HAYPTP(productCode)
+PRODUCT_SUB_CODE	HAYFOR	URUN_ALT_KOD	EMK100(policy).HAYFOR(productSubCode)
+ENDORSEMENT_CODE	WQHRK	ZEYIL_KOD	EMK100(policy).HAYHRK(endorsementCode)
+ISSUE_DATE	WQTZG,WQTZA,WQTZY merge into column	ZEYIL_TARIH	EMK100(policy).HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)
+EXIT_DATE	HOOONG,HOOONA,HOOONY merge into column	CIKIS_TARIH	Kod içerisindeki kontrollere göre '0' veya EMK131O(CollectionClaim).HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) alan değerini alabilir.
+DEFAULT_ARRIVAL_DATE	MOXGUN,MOXAY,MOXYIL merge into column	TEMERRUT_GELIS_TARIH	Kod içerisindeki kontrollere göre 'SCDate' parametre değerini veya TREASURY_PAYMENT_DATE(EM0550PA).PAYMENT_DATE(MOXYIL,MOXAY,MOXGUN) alan değerini alabilir.
+TREASURY_SC_PAYMENT_AMOUNT	WYEGT	DK_ODENECEK_TUTAR_HAZINE	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_AMOUNT(ODM754) değeri atanır.
+TREASURY_PAYMENT_DATE	WYODGN,WYODAY, WYODYL merge into column	HAZINE_ODEME_TARIH	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE (ODY754,ODA754,ODG754)
+FUND_UNIT_PRICE_EFFECTIVE	WQINTF	ODEME_FON_FIYAT_VALOR	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+FUND_UNIT_PRICE_PAYMENT	WQODMF	ODEME_FON_FIYAT	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+TREASURY_PENALTY_AMOUNT	WYCTUT	CEZA_TUTAR_HAZINE	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754)  parametre değeri atanır.
+TREASURY_PENALTY_PAYMENT_DATE	CYODGN,CYODAY, CYODYL merge into column	HAZINE_CEZA_TARIH	PenaltyDate parametre değeri atanır.
+REFERENCE_NO	WQREF	REFERANS_NO	DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri atanır.
+TRANSFER_TYPE	WQKYN	TRANSFER_TIP	Kod içerisindeki kontrollere göre '1', '2' veya '3' değeri alabilir.
+TRUST_FUND_SALES_DATE	DFETGN, DFETAY, DFETYL merge into the column	EMANET_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3.a.iii maddesinde bahsedilmiştir
+SC_FUND_SALES_DATE	XDKFSE	DK_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.i maddesinde bahsedilmiştir
+SC_LAST_FUND_SALES_DATE	XDKFST	DK_SON_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.ii maddesinde bahsedilmiştir
+FUND_SALES_DATE	WQFIGN,WQFIGA,WQFIGY merge into column	FON_SATIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 2. ya da 5.b.ii
+VALIDITY_DATE	WQYRGN, WQYRAY, WQYRYL merge into the column	YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 7.a.
+AMOUNT_TL	WQHKTU	HAK_KAZANILAN_GETIRI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 10.
+DESERVED_AMOUNT	WQHETU	HAK_KAZANILMAYANI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 10.
+POLICY_PENSION_ENTER_DATE 	WQSIGN,WQSIGA,WQSIGY merge into column	BES_ILK_YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 12.
+VESTING_RATE	WQORN 	HAKEDIS_ORAN	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+VESTING_YEAR	WQSUR 	HAKEDIS_YIL	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 9.
+VESTING_YEAR_ADD	WQESR 	HAKEDIS_YIL_EK	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+DESERVED_DATE	DKBSGN,DKBSAY,DKBSYL	HAKEDIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır.HAKDK başlığı altında Adım 9.
+z.	RAPOR ARA TABLOSUNDA İLGİLİ SÖZLEŞME YOK İSE, TABLOYA KAYDEDİLİR. DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo kontrolünde eşleşen kayıt bulunamadı ise ;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF) tablosuna kayıt atılır,
+ii.	DKS_DISTRIBUTED_CONTROL_Insert
+Kod içerisindeki kontroller sonucunda tablo alanlarından bazılarının değer ataması bu aşamaya gelmeden önce yapılmıştır, bütünsellik açısından aşağıda tüm alanlara yer verilmiştir.  
+JAVA KOLON ADI 	AS400 KOLON ADI 	KOLON ADI	KAYDEDİLECEK BİLGİ 
+CLASS_CODE	HAYPAK	PREFIKS	EMK100(policy).HAYPAK(classCode)
+POLICY_NO	HAYPNO	POLICE_NO	EMK100(policy).HAYPNO(policyNo)
+EGM_POLICY_TYPE	WQCNS	SERTIFIKA_CINS	Kod içerisindeki kontrollere göre F, İ veya G değeri alabilir.
+PRODUCT_CODE	HAYPTP	URUN_KOD	EMK100(policy).HAYPTP(productCode)
+PRODUCT_SUB_CODE	HAYFOR	URUN_ALT_KOD	EMK100(policy).HAYFOR(productSubCode)
+ENDORSEMENT_CODE	WQHRK	ZEYIL_KOD	EMK100(policy).HAYHRK(endorsementCode)
+ISSUE_DATE	WQTZG,WQTZA,WQTZY merge into column	ZEYIL_TARIH	EMK100(policy).HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)
+EXIT_DATE	HOOONG,HOOONA,HOOONY merge into column	CIKIS_TARIH	Kod içerisindeki kontrollere göre 0 veya EMK131O(CollectionClaim).HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) alan değerini alabilir.
+DEFAULT_ARRIVAL_DATE	MOXGUN,MOXAY,MOXYIL merge into column	TEMERRUT_GELIS_TARIH	Kod içerisindeki kontrollere göre SCDate parametre değerini veya TREASURY_PAYMENT_DATE(EM0550PA).PAYMENT_DATE(MOXYIL,MOXAY,MOXGUN) alan değerini alabilir.
+TREASURY_SC_PAYMENT_AMOUNT	WYEGT	DK_ODENECEK_TUTAR_HAZINE	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_AMOUNT(ODM754) değeri atanır.
+TREASURY_PAYMENT_DATE	WYODGN,WYODAY, WYODYL merge into column	HAZINE_ODEME_TARIH	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE (ODY754,ODA754,ODG754)  değerleri atanır.
+FUND_UNIT_PRICE_EFFECTIVE	WQINTF	ODEME_FON_FIYAT_VALOR	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+FUND_UNIT_PRICE_PAYMENT	WQODMF	ODEME_FON_FIYAT	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+TREASURY_PENALTY_AMOUNT	WYCTUT	CEZA_TUTAR_HAZINE	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754)  parametre değeri atanır.
+TREASURY_PENALTY_PAYMENT_DATE	CYODGN,CYODAY, CYODYL merge into column	HAZINE_CEZA_TARIH	PenaltyDate parametre değeri atanır.
+REFERENCE_NO	WQREF	REFERANS_NO	DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri atanır.
+TRANSFER_TYPE	WQKYN	TRANSFER_TIP	Kod içerisindeki kontrollere göre '1', '2' veya '3' değeri alabilir.
+TRUST_FUND_SALES_DATE	DFETGN, DFETAY, DFETYL merge into the column	EMANET_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3.a.iii maddesinde bahsedilmiştir
+SC_FUND_SALES_DATE	XDKFSE	DK_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.i maddesinde bahsedilmiştir
+SC_LAST_FUND_SALES_DATE	XDKFST	DK_SON_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.ii maddesinde bahsedilmiştir
+FUND_SALES_DATE	WQFIGN,WQFIGA,WQFIGY merge into column	FON_SATIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 2. ya da 5.b.ii
+VALIDITY_DATE	WQYRGN, WQYRAY, WQYRYL merge into the column	YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 7.a.
+AMOUNT_TL	WQHKTU	HAK_KAZANILAN_GETIRI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 10.
+DESERVED_AMOUNT	WQHETU	HAK_KAZANILMAYANI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 10.
+POLICY_PENSION_ENTER_DATE 	WQSIGN,WQSIGA,WQSIGY merge into column	BES_ILK_YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 12.
+VESTING_RATE	WQORN 	HAKEDIS_ORAN	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+VESTING_YEAR	WQSUR 	HAKEDIS_YIL	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 9.
+VESTING_YEAR_ADD	WQESR 	HAKEDIS_YIL_EK	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+DESERVED_DATE	DKBSGN,DKBSAY,DKBSYL	HAKEDIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır.HAKDK başlığı altında Adım 9.
+REFUND_DISTRIBUTED_CODE	Yeni kolondur	REFUND_DISTRIBUTED_CODE	3 değeri atanır. HAZİNEYE anlamına gelir.
+TRANSFER_PENALTY_AMOUNT	WACTUT	CEZA_TUTAR_TRANSFER	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TRANSFER_PENALTY_PAYMENT_DATE	CAODGN,CAODAY, CAODYL merge into column	TRANSFER_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+INSURED_PENALTY_AMOUNT	WXCTUT	CEZA_TUTAR_KATILIMCI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+INSURED_PENALTY_PAYMENT_DATE	CXODGN,CXODAY, CXODYL merge into column	KATILIMCI_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TAX_OFFICE_PENALTY_AMOUNT	WZCTUT	CEZA_TUTAR_VERGI_DAIRE	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır. 
+TAX_OFFICE_PENALTY_PAYMENT_DATE	CZODGN,CZODAY, CZODYL merge into column	VERGI_DAIRE_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null  değeri atanacaktır.
+TAX_OFFICE_PAYMENT_DATE	WZODGN,WZODAY, WZODYL merge into column	VERGI_DAIRE_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null  değeri atanacaktır.
+TAX_OFFICE_SC_PAYMENT_AMOUNT	WZEGT	DK_ODENECEK_TUTAR_VERGI_DAIRESI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır. 
+TRANSFER_SC_PAYMENT_AMOUNT	WAEGT	DK_ODENECEK_TUTAR_BASKA_SIRKET	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TRANSFER_PAYMENT_DATE	WAODGN,WAODAY, WAODYL merge into column	BASKA_SIRKETE_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+INSURED_SC_PAYMENT_AMOUNT	WXEGT	DK_ODENECEK_TUTAR_KATILIMCI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+INSURED_PAYMENT_DATE	WXODGN,WXODAY, WXODYL merge into column	KATILIMCI_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null  değeri atanacaktır.
+aa.	Aşağıdaki DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo alanlarına ilişkin program hafızası CLEAR edilir.
+Parametre
+TREASURY_SC_PAYMENT_AMOUNT(WYEGT), TREASURY_PAYMENT_DATE(WYODGN,WYODAY,WYODYL), TREASURY_PENALTY_AMOUNT(WYCTUT), TREASURY_PENALTY_PAYMENT_DATE(CYODGN,CYODAY,CYODYL), INSURED_SC_PAYMENT_AMOUNT(WXEGT), INSURED_PAYMENT_DATE(WXODGN, WXODAY, WXODYL), INSURED_PENALTY_AMOUNT(WXCTUT), INSURED_PENALTY_PAYMENT_DATE(CXODGN, CXODAY, CXODYL)
+bb.	EMK754L6(DKS_DISTRIBUTED_TREASURY(EMK754) tablosunun logical file'ıdır) tablosundaki bir sonraki kayıt ele alınmak üzere döngünün başına dönülür. Şartı sağlayan kayıtların tamamı ele alındığında döngüden çıkılacak ve VERGİ DAİRESİNE GİDEN DK LİSTESİ OLUŞTURMA adımlarından devam edilecektir.
+VERGİ DAİRESİNE GİDEN DK LİSTESİ OLUŞTURMA ADIMLARI:
+1.	ÖDEME KANALI PARAMETRESİ TUTULUR VE "VERGİ DAİRESİNE" ANLAMINA GELEN 1 DEĞERİ ATANIR.
+a.	WQKNL = ‘1‘ atanır.
+2.	VERGİ DAİRESİNE GİDEN DK LİSTESİNİN GİRİLEN ÇALIŞMA TARİH ARALIĞI KRİTERİNE UYGUN OLARAK OLUŞTURULMASI İÇİN BİR DÖNGÜ BAŞLATILIR. WQKNL parametresine atanan değer ve kriter giriş ekranında Çalışma Tarih aralığı alanında girilen başlangıç tarihi değerleri ile EMK754L6(DKS_DISTRIBUTED_TREASURY(EMK754) tablosunun logical file'ıdır ve sıralaması IS_PAID_TO_TAX_OFFICE(KNL754), PAYMENT_APPROVAL_DATE(ODY754,ODA754,ODG754) alanlarına göre yapılır.) tablosunda IS_PAYMENT_APPROVAL (ODO754) kolonu ‘1’e eşit olan olan en küçük kayda erişilir ve bu kayıttan itibaren okuyan bir döngüye başlanır. Eşleşen tüm kayıtlar ele alındığında döngüden çıkılacaktır.
+a.	YALNIZCA GİRİLEN TARİH ARALIĞI KRİTERİNİ KARŞILAYAN KAYITLAR ELE ALINIR.OPERASYON ÖDEME ONAY TARIHI EKRAN-1'DE ÇALIŞMA TARIH ARALIĞI ALANINDA GİRİLEN BİTİŞ TARİHİNDEN BÜYÜK ISE HAZİNEYE VE VERGİ DAİRESİNE GİDEN DK KAYITLARINI LİSTELEME METODU (LIS754) METODU SONLANDIRILIR VE ÇAĞIRILDIĞI BÖLÜME GERİ DÖNÜLÜR,
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE(ODY754,ODA754,ODG754) değeri ile ve  Ekran-1’de bulunan Çalışma Tarih Aralığı alanında girilen bitiş tarihi değerinden büyük mü kontrol edilir, büyük ise döngü sonlandırılır. Değil ise kontrollere aşağıdaki gibi devam edilir.
+b.	HAKSIZ IADE ÖDEME TIPI ALANI KONTROL EDILIR. BU ALANDA V - TOPLU DKS DEN GELEN İADE OLAN VADELER ,I - FON SATARAK VADE İADESİ , H - MANUAL TESPİT EDİLEN HAKSIZ ÖDEMELER ANLAMINA GELMEKTEDIR. HAKSIZ IADESI ÖDEMESI ALMADI ISE KAYIT ATLANIR. 
+i.	REFUND_UNFAIR_TYPE(TUR754) alanı boş değil ise kayıt atlanır ve eşleşen bir sonraki kayıt ele alınmak üzere döngünün başına dönülür. Boş ise aşağıdaki kontrolle devam edilir.
+c.	DKS ÖDEME TİPİ KONTROL EDILIR, YALNIZCA ÖDEME TİPİ T: TOPLU DKS OLAN KAYITLAR ELE ALINIR.
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).DKS_PAYMENT_TYPE_PRG(BS4754) alanı T’ye eşit değil ise kayıt atlanır ve eşleşen bir sonraki kayıt ele alınmak üzere döngünün başına dönülür. Eşit ise aşağıdaki gibi devam edilir.
+d.	SÖZLEŞME VARLIK KONTROLÜ YAPILIR.
+i.	Elde edilen CLASS_CODE(PAK754) ve POLICY (PNO754) değerleri ile eşleşen en büyük kayda erişmek üzere EMK100(policy) tablosunda varlık kontrolü yapılır.
+1.	Eşleşme bulunamazsa kayıt atlanır, DKS_DISTRIBUTED_TREASURY tablosunda eşleşen bir sonraki kayıt ele alınmak üzere döngünün başına dönülür.
+2.	Kayıt bulunursa kontrollere aşağıdaki gibi devam edilir ;
+e.	PLAN BİLGİLERİ ELDE EDİLİR.
+i.	EMK100(policy).HAYPTP(productCode) ve HAYFOR(productSubCode) değerleri ile EMK090(Plan) (pf tablodur, key : HTMPTP, HTMFOR, HTMDEV, HTMBKD, HTMVKD, HTMSNO)  tablosunda eşleşen ilk kayda erişilir ve kayıt okunur.
+f.	RAPORLAMADA KULLANILMAK ÜZERE RAPOR ARA TABLO ALANLARINA DEĞER ATAMASI YAPILIR. DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo alanlarına aşağıdaki değer atamaları yapılır :
+Alan Adı Java(As400)	Kolon Adı	Atanacak Değer
+ENDORSEMENT_CODE(WQHRK)	ZEYIL_KOD	EMK100(policy).HAYHRK(endorsementCode)
+ISSUE_DATE(WQTZG,WQTZA,WQTZY merge into column)	ZEYIL_TARIH	EMK100(policy).HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)
+g.	FERDİ POLİÇE İSE RAPOR ARA TABLOSU SERTİFİKA_CİNS KOLONUNA F DEĞERİ ATANIR.
+i.	EMK100(policy).HAYCNS(policyType) değeri ‘F’ye eşit ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'F' atanır.
+h.	GRUP POLİÇESİ İSE ÖDEYEN TİPİ KONTROL EDİLİR.
+i.	EMK100(policy).HAYCNS(policyType) değeri ‘G’ye eşit ise;
+1.	ÖDEYEN TIPI MÜŞTERI ISE YANI SIGORTALI VE SIGORTA ETTIREN AYNI KIŞI ISE POLIÇE CINSI PARAMETRESINE G(GRUP) ATANIR.
+a.	EMK100(policy).HAYODT(commonCustomerType) M'ye eşit ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'G' atanır.
+2.	ÖDEYEN TIPI MÜŞTERI DEĞIL ISE YANI SIGORTALI VE SIGORTA ETTIREN AYNI KIŞI DEĞIL ISE ; IGES SÖZLEŞME OLMA DURUMU KONTROL EDILIR. SÖZLEŞME CINSI BILGISI ELDE EDILIR. 
+a.	EMK100(policy).HAYODT(commonCustomerType) M’ye eşit değil ise HAYPAK(classCode), HAYPNO(policyNo), HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear) değerleri ile SÖZLEŞMENIN IGES-GBB-FERDİ OLMA DURUMUNU BULMAYA YARAYAN EPLIGE1 PCML çağırılır (PCML çıktısı yukarıda belirtilmiştir.) ve pcml'den dönen DONGC değeri kontrol edilir.  
+i.	DONGC değeri 'İ'ye eşit ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'İ' atanır.
+ii.	DONGC değeri 'İ'ye eşit değil ise; DKS_DISTRIBUTED_CONTROL(EM6752PF).EGM_POLICY_TYPE(WQCNS) = 'G' atanır.
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRUST_FUND_SALES_DATE(DFETGN, DFETAY, DFETYL) = NULL atanır. 
+j.	SÖZLEŞME SONLANMA TARİHİ BİLGİSİ ELDE EDİLİR.
+i.	EMK100(policy).HAYPAK(classCode), HAYPNO(policyNo), HAYTEC(renewal), HAYZEY(endorsement), HAYHRK(endorsementCode) değerleri ile EMK131O7(EMK131O(CollectionClaim) tablosunun logical file'ıdır ve sıralaması HOOPAK(CLASS_CODE), HOOPNO(POLICY_NO), HOOTEC(renewal), HOOZEY(endorsement), HOOHRK(ENDORSEMENT_NO) alanlarına göre yapılır.) tablosunda eşleşen ilk kayda erişmek üzere kontrol gerçekleştirilir.
+1.	Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).EXIT_DATE(HOOONG(sonlanma günü), HOOONA(sonlanma ayı) ve HOOONY(sonlanma yılı) merge into column) alanına 'Null' değeri atanır.
+2.	Kayıt bulunursa; erişilen kayıt okunur, DKS_DISTRIBUTED_CONTROL(EM6752PF).EXIT_DATE alanına EMK131O(CollectionClaim).HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) alan değerleri birleştirilerek atanır ve FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodu çalıştırılır.
+k.	KAYDIN "DKP HAZINEYE İADE EDILECEK TUTARLAR" TABLOSUNDAKI DK DÖNEMI BOŞ ISE, DEĞER ATAMASI YAPMAK ÜZERE EGM'DEN GELEN KESINLEŞEN DKS(DEVLET KATKISI NESNESI) NESNESININ YAZDIRILDIĞI TABLODA KONTROLLER GERÇEKLEŞTIRILIR. DOĞRU DÖNEM BILGISINE ULAŞMAK IÇIN ILGILI REFERANSA AIT TAHSILAT TIPI "DÜZENLI KATKI PAYI TAHSILATI" VEYA "EK KATKI PAYI TAHSILATI" OLAN, DURUM KODU 1 OLAN ILK KAYIT TESPIT EDILMELIDIR.
+i.	Kaydın DKS_DISTRIBUTED_TREASURY(EMK754). DATA_PERIOD(DON754) alan değeri 0’a eşit ise ;
+1.	EGM DEN GELEN KESINLEŞEN DKS(DEVLET KATKISI NESNESI) NESNESININ YAZDIRILDIĞI TABLODAKI ILGILI REFERANSA AIT OLAN KAYITLAR EGM'DEN GELIŞ TARIHINE GÖRE SIRALANARAK EN KÜÇÜK KAYITTAN ITIBAREN KONTROL EDILIR. DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri ile EMK751L3(DKS_RECONCILIATION_FINAL(EMK751) tablosunun logical file'ıdır ve sıralaması REFERENCE_NO(RF0751), EGM_ARRIVAL_DATE(GLY751, GLA751, GLG751) alanlarına göre yapılır.)tablosunda eşleşen en küçük kayda erişmek üzere kontrol gerçekleştirilir. Kayıt bulunduğu sürece aşağıdaki döngü işletilir, eşleşen tüm kayıtlar ele alındığında bu döngüden çıkılmalı ve "ELDE EDILEN DK DÖNEMI DEĞERI ILE DK NESNESININ ÖDEME TARIHLERININ TUTULDUĞU TABLO KONTROL EDILIR" maddesinden devam edilmelidir :
+a.	EGM'DEN GELEN TAHSILAT HAREKET TIPI KONTROL EDILIR DÜZENLI KATKI PAYI TAHSILATI(11) VEYA EK KATKI PAYI TAHSILATI(15) OLMALIDIR. (GevDeğerListesi:16) 
+i.	Bulunan kaydın DKS_RECONCILIATION_FINAL(EMK751).EGM_TRANSACTION_TYPE(HT0751) alan değeri 11 veya 15’e eşit mi kontrol edilir;
+1.	Eşit değil ise; kayıt atlanır DKS_RECONCILIATION_FINAL(EMK751) tablosundan yeni bir kayıt okumak üzere döngünün başına dönülür.
+2.	Eşit ise; kontrollere aşağıdaki gibi devam edilir.
+b.	DURUM KODU KONTROLÜ YAPILIR, DEVLET KATKISI HESAPLANMASINA ESAS KAYIT([1]) OLMALIDIR, 1 DIŞINDAKI DURUM KODLARI HATALI DURUMLARI IÇERIR. (GevDeğerListesi:26).
+i.	Bulunan kaydın DKS_RECONCILIATION_FINAL(EMK751).EGM_STATE_CONT_STATUS_CODE(MDK751) alan değeri [1] ’e eşit mi kontrol edilir;
+1.	Eşit değil ise ; kayıt atlanır DKS_RECONCILIATION_FINAL(EMK751) tablosundan yeni bir kayıt okumak üzere döngünün başına dönülür.
+2.	Eşit ise ; aşağıdaki gibi devam edilir.
+c.	"DKP HAZINEYE İADE EDILECEK TUTARLAR" TABLOSUNDAKI DK DÖNEMI ALANINA "DKP EGM'DEN GELENLER" TABLOSUNDAN ELDE EDILEN VERI DÖNEMI DEĞERI ATANIR.
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).DATA_PERIOD(DON754) alanına bulunan kaydın DKS_RECONCILIATION_FINAL(EMK751).DATA_PERIOD(VD0751) değeri atanır ve döngü sonlandırılır. Aşağıdaki madde ile devam edilir.
+l.	ELDE EDILEN DK DÖNEMI DEĞERI ILE DK NESNESININ ÖDEME TARIHLERININ TUTULDUĞU TABLO KONTROL EDILIR.
+i.	DATA_PERIOD(DON754) değeri ile TREASURY_PAYMENT_DATE(EM0550PA) tablosu DATA_PERIOD(MOXDON) alanında eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+1.	Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE(MOXGUN,MOXAY,MOXYIL) alanına 'Null' değeri atanır. 
+2.	Kayıt bulunursa; TREASURY_PAYMENT_DATE(EM0550PA) tablosu PAYMENT_DATE(MOXYIL,MOXAY,MOXGUN) alan değeri alınır ve DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE alanına atanır. Kontrollere aşağıdaki gibi devam edilir.  
+m.	Aşağıdaki parametre değer atamaları yapılır:
+n.	
+Parametre	Atanacak Değer
+SCAmount	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_AMOUNT(ODM754)
+FundNo	EMK090(Plan).HTMMB6(FUND_CODE)
+FundDate 	DKS_DISTRIBUTED_CONTROL(EM6752PF).DEFAULT_ARRIVAL_DATE(MOXGUN,MOXAY,MOXYIL) alan değeri
+o.	DK'NIN GELDİĞİ TARIHE AİT GÜNLÜK FON DEĞERI ELDE EDILIR.
+i.	FundDate , FundNo, "1" parametre değerleri ile EMK170L1(EMK170(FUND_PRICE) tablosunun logical file'ıdır ve sıralaması FONYIL(fund_date), FONAY(fund_date), FONGUN(fund_date), FONTNO(fund_code), FONSNO(fund_item_no) alanlarına göre yapılır.) tablosunda eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+1.	GÜNLÜK FON DEĞERI GIRILMEMIŞSE 0 OLARAK ALINIR ; Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_EFFECTIVE(WQINTF) alanına 0 değeri atanır.
+2.	GÜNLÜK FON DEĞERI GIRILMIŞSE OKUNUR ; Kayıt bulunursa ; DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_EFFECTIVE(WQINTF) alanına parametresine EMK170(FUND_PRICE).FONDG1(fund_unit_price) değeri atanır.
+p.	Aşağıdaki parametreye operasyon ödeme onay tarihi değerleri atanır:
+Parametre	Atanacak Değer
+FundDate 	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE  (ODY754,ODA754,ODG754)
+q.	OPERASYON ÖDEME ONAY TARIHINE AIT GÜNLÜK FON DEĞERI ELDE EDILIR.
+i.	FundDate, FundNo, "1" parametre değerleri ile EMK170L1(EMK170(FUND_PRICE) tablosunun logical file'ıdır ve sıralaması FONYIL(fund_date), FONAY(fund_date), FONGUN(fund_date), FONTNO(fund_code), FONSNO(fund_item_no) alanlarına göre yapılır.) tablosunda eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+1.	GÜNLÜK FON DEĞERİ GİRİLMEMİŞSE ; Kayıt bulunamazsa; DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_PAYMENT(WQODMF) alanına 0 değeri atanır.
+2.	GÜNLÜK FON DEĞERİ GİRİLMİŞSE; Kayıt bulunursa ;DKS_DISTRIBUTED_CONTROL(EM6752PF).FUND_UNIT_PRICE_PAYMENT(WQODMF) alanına EMK170(FUND_PRICE).FONDG1(fund_unit_price) değeri atanır.
+r.	GECIKME FAIZI KONTROL EDILIR. 
+i.	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754) değeri 0'a eşit ise; aşağıdaki parametre değer atamaları yapılır;
+Parametre	Atanacak Değer
+PenaltyDate (format : yyyyaagg)	Null
+ii.	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754)  değeri 0'a eşit değil ise; aşağıdaki parametre değer atamaları yapılır;
+Parametre	Atanacak Değer
+PenaltyDate	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE 1-4 digiti (ODY754,ODA754,ODG754)
+s.	REFERANS NUMARASI ELDE EDİLİR.
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).REFERENCE_NO(WQREF) alanına DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri atanır.
+t.	ÖDEME TİPİ KONTROL EDİLİR VE RAPORLAMADA KULLANILMAK ÜZERE TRANSFER TİPİ BELİRLENİR.
+i.	ÖDEME TİPİ TOPLU DKS İSE ; DKS_DISTRIBUTED_TREASURY(EMK754).DKS_PAYMENT_TYPE_PRG(BS4754) alanı T'ye eşit ise ;
+1.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRANSFER_TYPE(WQKYN) alanına '1' değeri atanır.
+ii.	ÖDEME TİPİ TOPLU DKS DEĞİL İSE ; DKS_DISTRIBUTED_TREASURY(EMK754).DKS_PAYMENT_TYPE_PRG(BS4754) alanı T'ye eşit değil ise ;
+1.	KAYDI YARATAN PROGRAM KONTROL EDİLİR VE RAPORLAMADA KULLANILMAK ÜZERE TRANSFER TİPİ BELİRLENİR.
+a.	DKS_DISTRIBUTED_TREASURY(EMK754).RECORDING_PROGRAM(YPG754) alan değeri 'EM0276' ya eşit ise;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRANSFER_TYPE(WQKYN) alanına '2' değeri atanır.
+b.	DKS_DISTRIBUTED_TREASURY(EMK754).RECORDING_PROGRAM(YPG754) alan değeri 'EM0276' ya eşit değil ise;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF).TRANSFER_TYPE(WQKYN) alanına '3' değeri atanır.
+u.	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) Metodu çalıştırılır.
+v.	EMK100(policy).HAYPAK(classCode), HAYPNO(policyNo) ve DKS_DISTRIBUTED_CONTROL(EM6752PF).REFERENCE_NO(WQREF) değerleri ile DKS_DISTRIBUTED_CONTROL(EM6752PF, key : CLASS_CODE(HAYPAK), POLICY_NO(HAYPNO), REFERENCE_NO(WQREF))  tablosunda eşleşen ilk kaydı okumak üzere kontrol gerçekleştirilir.
+w.	DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo alanlarına aşağıdaki gibi değer ataması yapılır. 
+Alan Adı Java(As400)	Kolon Adı	Atanacak Değer
+TAX_OFFICE_SC_PAYMENT_AMOUNT (WZEGT)	DK_ODENECEK_TUTAR_VERGI_DAIRESI	SCAmount parametre değeri atanır.
+TAX_OFFICE_PAYMENT_DATE (WZODGN,WZODAY, WZODYL merge into column)	VERGI_DAIRE_ODEME_TARIH	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE (ODY754,ODA754,ODG754) değeri atanır.
+TAX_OFFICE_PENALTY_AMOUNT (WZCTUT)	CEZA_TUTAR_VERGI_DAIRE	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754)  değeri atanır.
+TAX_OFFICE_PENALTY_PAYMENT_DATE (CZODGN,CZODAY, CZODYL merge into column)	HAZINE_CEZA_TARIH	PenaltyDate parametre değeri atanır.
+x.	RAPOR ARA TABLOSUNDA İLGİLİ SÖZLEŞME VAR İSE, TABLODA GÜNCELLENİR. DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo kontrolünde eşleşen kayıt bulunabildi ise ;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF) tablosu update edilir,
+ii.	DKS_DISTRIBUTED_CONTROL_Update
+Kod içerisindeki kontroller sonucunda update edilecek tablo alanlarından bazılarına değer ataması bu aşamaya gelmeden önce yapılmıştır, bütünsellik açısından aşağıda tüm alanlara yer verilmiştir.
+JAVA KOLON ADI 	AS400 KOLON ADI 	KOLON ADI	KAYDEDİLECEK BİLGİ 
+CLASS_CODE	HAYPAK	PREFIKS	EMK100(policy).HAYPAK(classCode)
+POLICY_NO	HAYPNO	POLICE_NO	EMK100(policy).HAYPNO(policyNo)
+EGM_POLICY_TYPE	WQCNS	SERTIFIKA_CINS	Kod içerisindeki kontrollere göre 'F', 'İ' veya 'G' değeri alabilir.
+PRODUCT_CODE	HAYPTP	URUN_KOD	EMK100(policy).HAYPTP(productCode)
+PRODUCT_SUB_CODE	HAYFOR	URUN_ALT_KOD	EMK100(policy).HAYFOR(productSubCode)
+ENDORSEMENT_CODE	WQHRK	ZEYIL_KOD	EMK100(policy).HAYHRK(endorsementCode)
+ISSUE_DATE	WQTZG,WQTZA,WQTZY merge into column	ZEYIL_TARIH	EMK100(policy).HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)
+EXIT_DATE	HOOONG,HOOONA,HOOONY merge into column	CIKIS_TARIH	Kod içerisindeki kontrollere göre 'Null' veya EMK131O(CollectionClaim).HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) alan değerini alabilir.
+DEFAULT_ARRIVAL_DATE	MOXGUN,MOXAY,MOXYIL merge into column	TEMERRUT_GELIS_TARIH	Kod içerisindeki kontrollere göre 'Null' veya TREASURY_PAYMENT_DATE(EM0550PA).PAYMENT_DATE(MOXYIL,MOXAY,MOXGUN) alan değerini alabilir.
+TAX_OFFICE_SC_PAYMENT_AMOUNT	WZEGT	DK_ODENECEK_TUTAR_VERGI_DAIRESI	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_AMOUNT(ODM754)  değeri atanır. 
+TAX_OFFICE_PAYMENT_DATE	WZODGN,WZODAY, WZODYL merge into column	VERGI_DAIRE_ODEME_TARIH	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE 
+FUND_UNIT_PRICE_EFFECTIVE	WQINTF	ODEME_FON_FIYAT_VALOR	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+FUND_UNIT_PRICE_PAYMENT	WQODMF	ODEME_FON_FIYAT	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+TAX_OFFICE_PENALTY_AMOUNT	WZCTUT	CEZA_TUTAR_VERGI_DAIRE	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754) değeri atanır.
+TAX_OFFICE_PENALTY_PAYMENT_DATE	CZODGN,CZODAY, CZODYL merge into column	VERGI_DAIRE_CEZA_TARIH	PenaltyDate parametre değeri atanır.
+REFERENCE_NO	WQREF	REFERANS_NO	DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri atanır.
+TRANSFER_TYPE	WQKYN	TRANSFER_TIP	Kod içerisindeki kontrollere göre '1', '2' veya '3' değeri alabilir.
+TRUST_FUND_SALES_DATE	DFETGN, DFETAY, DFETYL merge into the column	EMANET_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3.a.iii maddesinde bahsedilmiştir
+SC_FUND_SALES_DATE	XDKFSE	DK_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.i maddesinde bahsedilmiştir
+SC_LAST_FUND_SALES_DATE	XDKFST	DK_SON_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.ii maddesinde bahsedilmiştir
+FUND_SALES_DATE	WQFIGN,WQFIGA,WQFIGY merge into column	FON_SATIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 2. ya da 5.b.ii
+VALIDITY_DATE	WQYRGN, WQYRAY, WQYRYL merge into the column	YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 7.a.
+AMOUNT_TL	WQHKTU	HAK_KAZANILAN_GETIRI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 10.
+DESERVED_AMOUNT	WQHETU	HAK_KAZANILMAYANI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 10.
+POLICY_PENSION_ENTER_DATE 	WQSIGN,WQSIGA,WQSIGY merge into column	BES_ILK_YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 12.
+VESTING_RATE	WQORN 	HAKEDIS_ORAN	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+VESTING_YEAR	WQSUR 	HAKEDIS_YIL	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 9.
+VESTING_YEAR_ADD	WQESR 	HAKEDIS_YIL_EK	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+DESERVED_DATE	DKBSGN,DKBSAY,DKBSYL	HAKEDIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır.HAKDK başlığı altında Adım 9.
+y.	RAPOR ARA TABLOSUNDA İLGİLİ SÖZLEŞME YOK İSE, TABLOYA KAYDEDİLİR. DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo kontrolünde eşleşen kayıt bulunamadı ise ;
+i.	DKS_DISTRIBUTED_CONTROL(EM6752PF) tablosuna kayıt atılır, 
+ii.	DKS_DISTRIBUTED_CONTROL_Insert
+Kod içerisindeki kontroller sonucunda tablo alanlarından bazılarının değer ataması bu aşamaya gelmeden önce yapılmıştır, bütünsellik açısından aşağıda tüm alanlara yer verilmiştir. 
+JAVA KOLON ADI 	AS400 KOLON ADI 	KOLON ADI	KAYDEDİLECEK BİLGİ 
+CLASS_CODE	HAYPAK	PREFIKS	EMK100(policy).HAYPAK(classCode)
+POLICY_NO	HAYPNO	POLICE_NO	EMK100(policy).HAYPNO(policyNo)
+EGM_POLICY_TYPE	WQCNS	SERTIFIKA_CINS	Kod içerisindeki kontrollere göre 'F', 'İ' veya 'G' değeri alabilir.
+PRODUCT_CODE	HAYPTP	URUN_KOD	EMK100(policy).HAYPTP(productCode)
+PRODUCT_SUB_CODE	HAYFOR	URUN_ALT_KOD	EMK100(policy).HAYFOR(productSubCode)
+ENDORSEMENT_CODE	WQHRK	ZEYIL_KOD	EMK100(policy).HAYHRK(endorsementCode)
+ISSUE_DATE	WQTZG,WQTZA,WQTZY merge into column	ZEYIL_TARIH	EMK100(policy).HAYTZG(issueDay), HAYTZA(issueMonth), HAYTZY(issueYear)
+EXIT_DATE	HOOONG,HOOONA,HOOONY merge into column	CIKIS_TARIH	Kod içerisindeki kontrollere göre 'Null' veya EMK131O(CollectionClaim).HOOONG(paymentConfirmationDay), HOOONA(paymentConfirmationMonth), HOOONY(paymentConfirmationYear) alan değerini alabilir.
+DEFAULT_ARRIVAL_DATE	MOXGUN,MOXAY,MOXYIL merge into column	TEMERRUT_GELIS_TARIH	Kod içerisindeki kontrollere göre 'Null' veya TREASURY_PAYMENT_DATE(EM0550PA).PAYMENT_DATE(MOXYIL,MOXAY,MOXGUN) alan değerini alabilir.
+TAX_OFFICE_SC_PAYMENT_AMOUNT	WZEGT	DK_ODENECEK_TUTAR_VERGI_DAIRESI	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_AMOUNT(ODM754) değeri atanır.
+TAX_OFFICE_PAYMENT_DATE	WZODGN,WZODAY, WZODYL merge into column	VERGI_DAIRE_ODEME_TARIH	DKS_DISTRIBUTED_TREASURY(EMK754).PAYMENT_APPROVAL_DATE (ODY754,ODA754,ODG754)
+FUND_UNIT_PRICE_EFFECTIVE	WQINTF	ODEME_FON_FIYAT_VALOR	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+FUND_UNIT_PRICE_PAYMENT	WQODMF	ODEME_FON_FIYAT	Kod içerisindeki kontrollere göre 0 veya EMK170(FUND_PRICE).FONDG1(fund_unit_price) alan değerini alabilir.
+TAX_OFFICE_PENALTY_AMOUNT	WZCTUT	CEZA_TUTAR_VERGI_DAIRE	DKS_DISTRIBUTED_TREASURY(EMK754).DEFAULT_INTEREST(TEM754)  değeri atanır.
+TAX_OFFICE_PENALTY_PAYMENT_DATE	CZODGN,CZODAY, CZODYL merge into column	VERGI_DAIRE_CEZA_TARIH	PenaltyDate parametre değeri atanır.
+REFERENCE_NO	WQREF	REFERANS_NO	DKS_DISTRIBUTED_TREASURY(EMK754).REFERENCE_NO(REF754) değeri atanır.
+TRANSFER_TYPE	WQKYN	TRANSFER_TIP	Kod içerisindeki kontrollere göre '1', '2' veya '3' değeri alabilir.
+TRUST_FUND_SALES_DATE	DFETGN, DFETAY, DFETYL merge into the column	EMANET_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3.a.iii maddesinde bahsedilmiştir
+SC_FUND_SALES_DATE	XDKFSE	DK_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.i maddesinde bahsedilmiştir
+SC_LAST_FUND_SALES_DATE	XDKFST	DK_SON_FON_SATIS_TARIH	FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400) metodundan dönen değeri varsa atanır, yoksa Null atanır. E400 Metodu - 3 .b.ii maddesinde bahsedilmiştir
+FUND_SALES_DATE	WQFIGN,WQFIGA,WQFIGY merge into column	FON_SATIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 2. ya da 5.b.ii
+VALIDITY_DATE	WQYRGN, WQYRAY, WQYRYL merge into the column	YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 7.a.
+AMOUNT_TL	WQHKTU	HAK_KAZANILAN_GETIRI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 10.
+DESERVED_AMOUNT	WQHETU	HAK_KAZANILMAYANI_TUTAR	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 10.
+POLICY_PENSION_ENTER_DATE 	WQSIGN,WQSIGA,WQSIGY merge into column	BES_ILK_YURURLUK_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır. HAKDK başlığı altında Adım 12.
+VESTING_RATE	WQORN 	HAKEDIS_ORAN	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+VESTING_YEAR	WQSUR 	HAKEDIS_YIL	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır. HAKDK başlığı altında Adım 9.
+VESTING_YEAR_ADD	WQESR 	HAKEDIS_YIL_EK	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa default değeri atanır.HAKDK başlığı altında Adım 9.
+DESERVED_DATE	DKBSGN,DKBSAY,DKBSYL	HAKEDIS_TARIH	SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK) metodundan dönen değeri varsa atanır, yoksa Null atanır.HAKDK başlığı altında Adım 9.
+REFUND_DISTRIBUTED_CODE	Yeni kolondur	REFUND_DISTRIBUTED_CODE	4 değeri atanır. VERGİ DAİRESİNE anlamına gelir.
+TRANSFER_PENALTY_AMOUNT	WACTUT	CEZA_TUTAR_TRANSFER	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TRANSFER_PENALTY_PAYMENT_DATE	CAODGN,CAODAY, CAODYL merge into column	TRANSFER_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null  değeri atanacaktır.
+INSURED_PENALTY_AMOUNT	WXCTUT	CEZA_TUTAR_KATILIMCI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+INSURED_PENALTY_PAYMENT_DATE	CXODGN,CXODAY, CXODYL merge into column	KATILIMCI_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TREASURY_PENALTY_AMOUNT	WYCTUT	CEZA_TUTAR_HAZINE	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TREASURY_PENALTY_PAYMENT_DATE	CYODGN,CYODAY, CYODYL merge into column	HAZINE_CEZA_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TREASURY_PAYMENT_DATE	WYODGN,WYODAY, WYODYL merge into column	HAZINE_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+TREASURY_SC_PAYMENT_AMOUNT	WYEGT	DK_ODENECEK_TUTAR_HAZINE	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır. 
+TRANSFER_SC_PAYMENT_AMOUNT	WAEGT	DK_ODENECEK_TUTAR_BASKA_SIRKET	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+TRANSFER_PAYMENT_DATE	WAODGN,WAODAY, WAODYL merge into column	BASKA_SIRKETE_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+INSURED_SC_PAYMENT_AMOUNT	WXEGT	DK_ODENECEK_TUTAR_KATILIMCI	Kod içerisinde herhangi bir atama yapılmadığından default değeri atanacaktır.
+INSURED_PAYMENT_DATE	WXODGN,WXODAY, WXODYL merge into column	KATILIMCI_ODEME_TARIH	Kod içerisinde herhangi bir atama yapılmadığından Null değeri atanacaktır.
+z.	Aşağıdaki DKS_DISTRIBUTED_CONTROL(EM6752PF) tablo alanlarına ilişkin program hafızası CLEAR edilir.
+Parametre
+TAX_OFFICE_SC_PAYMENT_AMOUNT(WZEGT), TAX_OFFICE_PAYMENT_DATE(WZODGN,WZODAY,WZODYL),TAX_OFFICE_PENALTY_AMOUNT(WZCTUT),TAX_OFFICE_PENALTY_PAYMENT_DATE(CZODGN, CZODAY, CZODYL), TREASURY_SC_PAYMENT_AMOUNT(WYEGT), TREASURY_PAYMENT_DATE(WYODGN,WYODAY,WYODYL), TREASURY_PENALTY_AMOUNT(WYCTUT), TREASURY_PENALTY_PAYMENT_DATE(CYODGN,CYODAY,CYODYL),INSURED_SC_PAYMENT_AMOUNT(WXEGT),INSURED_PAYMENT_DATE(WXODGN, WXODAY, WXODYL), INSURED_PENALTY_AMOUNT(WXCTUT), INSURED_PENALTY_PAYMENT_DATE(CXODGN, CXODAY, CXODYL)
+aa.	EMK754L6(DKS_DISTRIBUTED_TREASURY(EMK754) tablosunun logical file'ıdır) tablosundaki bir sonraki kayıt ele alınmak üzere döngünün başına dönülür. Şartı sağlayan kayıtların tamamı ele alındığında döngüden çıkılacaktır.
+3.	HAZİNEYE VE VERGİ DAİRESİNE GİDEN DK KAYITLARINI LİSTELEME METODU (LIS754) sonlandırılarak çağırıldığı bölüme geri dönülür.
+FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400)  
+FON SATIŞ EMİR VE TAMAMLANMA TARİHİ HESAPLAMA METODU (E400)  
+1.	CollectionClaim (EMK131O) tablosundan okunan CLASS_CODE, POLICY_NO, renewal ,ENDORSEMENT_NO,ENDORSEMENT (HOOPAK, HOOPOL, HOOTEC, HOOHRK, HOOZEY) değerleri ile fund_detail (EMK400) tablosundaki CLASS_CODE, POLICY_NO, renewal , FOUND_TRANSACTION_CODE,ENDORSEMENT (PAKCC,PNOCC,TECCC,HRKCC , ZEYCC) alanları okunur. CANCELLATION_CODE (ARTCC) =2 olan kayıtlar alınır. 
+2.	Kayıt yoksa metot sonlandırılır. Kayıt bulunursa erişilen kayıtlar için en küçük kayıttan itibaren bir döngü başlatılır. (KLIST: PAKCC,PNOCC,TECCC,HRKCC,MNOCC,MNXCC,BKDCC,VKDCC,VSNCC,VYLCC,VAYCC,VGNCC)  Emeklilik ödenen primlerin fon dağılımlarının tutulduğu tablodaki ilgili kayıtlar okunur. İade kayıtları alınır.
+3.	İlgili kaydın PTPCC,FORCC (EMK400) değerleri ile Plan (EMK090) tablosundaki productCode, productSubCode (HTMPTP , HTMFOR) alanları okunur. İlk kayda erişilir.
+4.	Eğer fund_detail. fundCode (EMK400.VKDCC) değeri Plan.FUND_CODE (HTMMB6) değerine eşit değilse;  Sözleşmenin bulunan Plan bilgileri ile fon dağılımları tablosundaki teminat kodu eşleştirmesi yapılır. Eşit değilse 
+a.	Bulunan fund_detail.fundCode (VKDCC) değeri VKDA dizisinde aranır. Katılım fonu kontrolü yapılır
+b.	Kayıt yoksa atama yapılmadan akış 6. maddeden devam eder. (Döngüdeki bir sonraki kayda geçilir)
+c.	Kayıt varsa  DKS_DISTRIBUTED_CONTROL.TRUST_FUND_SALES_DATE = fund_detail.INVESTMENT_ORIENTATION_DATE (DFETYL= SCYCC , DFETAY= SCACC,  DFETGN= SCGCC) olarak setlenir. Kayıt bulunursa son satış tarihi 690 ve 691(DK fonları) fonlarının satış tarihi olarak kaydedilir.
+5.	Eğer fund_detail. fundCode (EMK400.VKDCC) değeri Plan.FUND_CODE (HTMMB6) değerine eşit ise; Sözleşmenin bulunan Plan bilgileri ile fon dağılımları tablosundaki teminat kodu eşleştirmesi yapılır. Eşitse
+a.	fund_detail. COVERAGE_CODE (EMK400.FPKCC) değeri 'I' ise;  Fon takas kodu 'I' ise 
+i.	fund_detail.INVESTMENT_ORIENTATION_DATE değeri TARIH değişkenine setlenir. Fon Satış Emir  tarihi Yatırıma yönlenme tarihi olarak atanır. 
+ii.	TARIH değişkenindeki değer DKS_DISTRIBUTED_CONTROL.SC_FUND_SALES_DATE (EM6752PF.XDKFSE) değerine setlenir. (GGAAYYYY formatında)
+b.	fund_detail. COVERAGE_CODE (EMK400.FPKCC) değeri 'T' ise;
+i.	fund_detail.INVESTMENT_ORIENTATION_DATE değeri TARIH değişkenine setlenir. Fon satışının tamamlandığı tarih Yatırıma yönlenme tarihi olarak atanır.
+ii.	TARIH değişkenindeki değer DKS_DISTRIBUTED_CONTROL.SC_LAST_FUND_SALES_DATE (EM6752PF.XDKFST) değerine setlenir. (GGAAYYYY formatında)
+c.	Diğer durumlarda herhangi bir atama yapılmadan madde 6'ya geçilir. (Döngüdeki bir sonraki kayda geçilir)
+6.	Kayıtlar bitene kadar döngüdeki bir sonraki kayda geçilir.
+7.	Metot sonlandırılır.
+SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK)
+SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİ HESAPLAMA METODU (HAKDK)
+1.	EPLDKB PCML'i çağırılır. Bu PCML State Contribution domaininde bulunacaktır. SONLANMA TARİHİ VE DK HAKEDİŞ TARİHİNİ HESAPLAR.
+a.	Gönderilen değerler: HAYPAK(classCode) , HAYPNO(policyNo), PYear(0), PMonth(0) ve PDay(0) parametreleri gönderilir.
+b.	Dönen değerler : PYear, PMonth ve PDay
+c.	PCML detayı : 
+EPLDKP
+<pcml version="7.0">
+   <!-- RPG program: EPLDKB  -->
+   <!-- created: 2022-01-24-16.46.52 -->
+   <!-- source: EMKLIBP/PCMLSRC(EPLDKB) -->
+   <program name="EPLDKB" path="/QSYS.LIB/EMKLIBP.LIB/EPLDKB.PGM">
+      <data name="PAK" type="char" length="1" usage="inputoutput" />
+      <data name="PNO" type="packed" length="7" precision="0" usage="inputoutput" />
+      <data name="PYIL" type="packed" length="4" precision="0" usage="inputoutput" />
+      <data name="PAY" type="packed" length="2" precision="0" usage="inputoutput" />
+      <data name="PGUN" type="packed" length="2" precision="0" usage="inputoutput" />
+   </program>
+</pcml> 
+2.	Rapor ara tablosuna Fon satış tarihi yazılır. Dönen PYear, PMonth, PDay parametre değerleri DKS_DISTRIBUTED_CONTROL.FUND_SALES_DATE(WQFSGN,WQFSAY,WQFSYL) kolonuna birleştirilerek tarih şeklinde yazılacaktır.
+3.	DocCompDate(EVRTRH) değişkenine Null atanır.
+4.	Evrak tamamlanma tarihi ilgili tablodan kontrol edilir ve rapor ara tablosuna Evrak Tamamlama Tarihi olarak yazılır. EMK100R(Policy_document_detail) tablosundan, sözleşmenin EMK100(Policy) tablosundaki değerleri ile eşleşen kayıt okunur.(Keylist:TAMPAK(classCode),TAMPNO(policyNo),TAMTEC(renewal),TAMZEY(endorsement),TAMTGN(DocumentComplatedDate),TAMTAY(DocumentComplatedDate),TAMTYL(DocumentComplatedDate),TAMHRK(transactionType))
+5.	HAYPAK(classCode) = TAMPAK(classCode), HAYPNO(policyNo) = TAMPNO(policyNo), HAYTEC(renewal)= TAMTEC(renewal), HAYZEY(endorsement) = TAMZEY(endorsement) 
+a.	Kayıt varsa DocCompDate değişkenine atama yapılır; DocCompDate= EMK100R.TAMTGN(DocumentComplatedDate), EMK100R.TAMTAY(DocumentComplatedDate), EMK100R.TAMTYL(DocumentComplatedDate)
+b.	Kayıt yoksa 5. adımdan devam edilir.
+6.	Fon satış tarihi boş ise ve sözleşme Hak Sahiplerince Aranmayan(57) hareketi görmemiş ise; Evrak Tamamlama tarihinden sonra tatil gününe denk gelmeyen ilk iş günü tarihi rapor ara tablosuna Fon satış tarihi olarak yazılır. DKS_DISTRIBUTED_CONTROL.FUND_SALES_DATE değeri Null ise aşağıdaki işlemler yapılır değilse 6. adımından devam edilir.
+a.	Değişken ataması yapılır P1GUN= TAMTGN(DocumentComplatedDate), P1AY= TAMTAY(DocumentComplatedDate), P1YIL= TAMTYL(DocumentComplatedDate)
+b.	EMK100(Policy) tablosundaki kaydın HAYHRK(endorsementCode) kolonu 57 değerinde değilse aşağıdaki işlemler yapılır, eğer koşula uymuyor ise 6. adımından devam edilir. 
+i.	GUNHES programı çağırılır. Programı çağırırken P1GUN, P1AY ve P1YIL ve P1FARK(1) değerleri gönderilir. Programın amacı gönderilen tarihten sonra tatil gününe denk gelmeyen ilk iş günü tarihini bulmaktır.
+1.	P1GUN, P1AY ve P1YIL değerleri birleştirilerek tarih haline getirilir ve P1FARK değeri kadar döngü kurulur. P1FARK değeri 1 olarak gönderilmiştir, bu sebeple döngü 1 kez çalışıp sona erecektir.
+2.	Döngünün içinde ise birleştirilen tarihe 1 gün eklenir ve P2YIL, P2AY, P2GUN değişkenlerine ayrı ayrı atanır. Bu değişkenlerle TETIL tablosundan okuma yapılır. 
+a.	Kayıt varsa döngü başa döner.
+b.	Kayıt yoksa sayaç 1 arttırılır. Bu şekilde P1FARK değerine eşit olacağı için döngü sonlanır.
+ii.	Dönen P2YIL, P2AY, P2GUN parametre değerleri DKS_DISTRIBUTED_CONTROL.FUND_SALES_DATE kolonuna birleştirilerek tarih şeklinde yazılacaktır.
+7.	EPLDKB PCML'inden dönen PYear değişkenindeki değer 0(sıfır) değilse
+a.	HYIL=PYear, HAY=PMonth, HGUN=PDay olarak değişkenlere atama yapılır.
+b.	Eğer 0(sıfır) ise HYIL, HAY, HGUN değişkenlerine DKS_DISTRIBUTED_CONTROL.FUND_SALES_DATE kolonundaki tarihin yıl, ay, gün olarak ayrılmış hali atanır.
+8.	Sözleşmenin Başlangıç Tarihi bilgisi rapor ara tablosuna Yürürlük tarihi olarak yazılır. EMK100(Policy) tablosundan okuduğumuz kaydın HAYPAK ve HAYPNO kolonları ile tekrar okuma yapılır.
+a.	Okunan kaydın HAYSBY(contractStartYear), HAYSBA(contractStartMonth), HAYSBG(contractStartDay) kolonlarındaki bilgi DKS_DISTRIBUTED_CONTROL.VALIDITY_DATE(WQYRGN,WQYRAY,WQYRL) kolonuna birleştirilerek tarih şeklinde yazılacaktır.
+9.	Hak edilmiş DK'nın oran ve yıl hesaplamasını yapan program; yukarıda 2. maddede elde edilen fon satış tarihi dolu ise onunla değilse 5. maddede elde edilen Fon satış tarihi ile çağırılır. EPLDKT PCML'i çağırılır. Bu PCML State Contribution domaininde bulunacaktır. HAKEDİLMİŞ DK'NIN ORAN-YIL HESAPLAMASINI YAPAN PROGRAMDIR.
+a.	Gönderilen değerler: HAYPAK(classCode) , HAYPNO(policyNo), HYIL, HAY, HGUN, SYIL(0), SAY(0), SGUN(0), EKSUR(0), TOPSUR(0), HAKORN(0) ve SWC boşluk(' ') olarak gönderilir.
+b.	Dönen değerler : SYIL, SAY, SGUN, EKSUR, TOPSUR, HAKORN
+c.	PCML detayı : 
+EPLDKT
+<pcml version="6.0">                                                    
+   <!-- RPG program: EPLDKT  -->                                    
+   <!-- created: 2021-03-02-14.21.07 -->                                
+   <!-- source: EMKLIBP/EMKSRC(EPLDKT) -->    
+   <program name="EPLDKT" path="/QSYS.LIB/ EMKLIBP.LIB/EPLDKT.PGM">    
+      <data name="pak" type="char" length="1" usage="inputoutput" /> 
+      <data name="pno" type="packed" length="7" precision="0" usage="inputoutput" />
+      <data name="swc" type="char" length="1" usage="inputoutput" />  
+      <data name="hyil" type="packed" length="4" precision="0" usage="inputoutput" /> 
+      <data name="hay" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="hgun" type="packed" length="2" precision="0" usage="inputoutput" />
+      <data name="syil" type="packed" length="4" precision="0" usage="inputoutput" /> 
+      <data name="say" type="packed" length="2" precision="0" usage="inputoutput" /> 
+      <data name="sgun" type="packed" length="2" precision="0" usage="inputoutput" />
+      <data name="eksure" type="packed" length="2" precision="0" usage="inputoutput" />
+      <data name="hakorn" type="packed" length="5" precision="4" usage="inputoutput" />     
+   </program>                                                           
+</pcml>                                        
+10.	Dönen parametre değerleri aşağıdaki kolonlara atanır.
+Alan Adı Java(AS400)	Kolon Adı	Atanacak Değer
+DKS_DISTRIBUTED_CONTROL.VESTING_YEAR_ADD(WQESR)	HAKEDIS_YIL_EK	EKSUR
+DKS_DISTRIBUTED_CONTROL.VESTING_YEAR(WQSUR)	HAKEDIS_YIL	TOPSUR
+DKS_DISTRIBUTED_CONTROL.VESTING_RATE(WQORN)	HAKEDIS_ORAN	HAKORN
+DKS_DISTRIBUTED_CONTROL.DESERVED_DATE(DKBSGNDKBSAY,DKBSYL)	HAKEDIS_TARIH	SGUN - SAY - SYIL
+11.	Dönen HAKORN parametresi ile sırasıyla aşağıdaki işlemler yapılır.
+
+Alan Adı Java(AS400)	Kolon Adı	Atanacak Değer
+DKS_DISTRIBUTED_CONTROL.AMOUNT_TL(WQHKTU)	HAK_KAZANILAN_GETIRI_TUTAR	SCAmount(WQEGT) * HAKORN
+DKS_DISTRIBUTED_CONTROL.DESERVED_AMOUNT(WQHETU)	HAK_KAZANILMAYANI_TUTAR	SCAmount(WQEGT) - DKS_DISTRIBUTED_CONTROL.AMOUNT_TL(WQHKTU)
+12.	EPLEYT PCML'i çağırılır. Bu PCML Policy Management domaininde bulunacaktır. Müşterinin En Eski Yürürlük Tarihi (SİSTEME GİRİŞ TARİHİ VE DK BAŞLANGIÇ TARİHİNİ BULUR.)
+a.	Gönderilen değerler: HAYMNO(customerNo) değeri EMNO ve EPNO, HAYPAK(classCode) değeri EPAK, EBSYIL(0), EBSAY(0), EBSGUN(0), EKBYIL(0), EKBAY(0), EKBGUN(0) olarak gönderilir.
+b.	Dönen değerler : EBSYIL, EBSAY, EBSGUN
+c.	PCML detayı : 
+EPLEYT
+<pcml version="7.0">                                                                       
+   <!-- RPG program: EPLEYT  -->                                                           
+   <!-- created: 2022-02-14-15.02.21 -->                                                   
+   <!-- source: EMKLIBP/EMKSRC(EPLEYT) -->                                                 
+   <program name="EPLEYT" path="/QSYS.LIB/EMKLIBP.LIB/EPLEYT.PGM">                         
+      <data name="PMNO" type="packed" length="10" precision="0" usage="inputoutput" />     
+      <data name="PPAK" type="char" length="1" usage="inputoutput" />                      
+      <data name="PPNO" type="packed" length="7" precision="0" usage="inputoutput" />      
+      <data name="PBSYIL" type="packed" length="4" precision="0" usage="inputoutput" />    
+      <data name="PBSAY" type="packed" length="2" precision="0" usage="inputoutput" />     
+      <data name="PBSGUN" type="packed" length="2" precision="0" usage="inputoutput" />    
+      <data name="DKBYIL" type="packed" length="4" precision="0" usage="inputoutput" />    
+      <data name="DKBAY" type="packed" length="2" precision="0" usage="inputoutput" />     
+      <data name="DKBGUN" type="packed" length="2" precision="0" usage="inputoutput" />    
+   </program>                                                                              
+</pcml>
+13.	Sözleşmenin BES sistemine ilk giriş tarihi rapor ara tablosuna(Sistem İlk) yazılır. Dönen EBSYIL, EBSAY ve EBSGUN değerleri DKS_DISTRIBUTED_CONTROL.POLICY_PENSION_ENTER_DATE(WQSIGN,WQSIAY,WQSIYL) kolonuna birleştirilerek tarih şeklinde yazılacaktır ve sonrasında metot sonlanır.
+Ana Fonksiyon ve Metotlar içerisinde AS400 Programında kullanılan bazı değişken adları için aşağıda belirtilmiş olan yeni isimlendirmeler kullanılmıştır. Ek olarak kullanımı gereksiz olan bazı parametreler görüş ve onay alınarak kaldırılmıştır.
+SCDate	DKTAR
+SCAmount	WQEGT
+PenaltyDate	CQODGN,CQODAY,CQODYL
+PenaltyAmount	WQCTUT
+FundDate	WQFGN,WQFYL,WQFAY
+FundNo 	WQFON
+PYear	PYILX
+PMonth	PAYX
+PDay	PGUNX
+DocCompDate	EVRTRH
+Değişkenin Yeni Adı 	Değişkenin AS400 Adı
+1.5.2 Batch Yapısı
+Çalıştır butonuna tıklandıktan sonra batch başlama ve bitiş durumlarının kontrolü için BATCH_LOGS tablosuna kayıt atılacaktır. Yani ilgili tabloya batch başladığı ve bittiği zaman için yeni bir kayıt oluşturulmalıdır. BATCH_LOGS tablosu yapısı aşağıdaki gibidir: 
+Tablo Kolon Adı	Açıklaması
+BATCH_NAME	Çalışan Batch Adı 
+BATCH_STATUS	Batch çalıştığında kayıt oluşturulurken 0 değeri atanmalıdır. Tamamlanması veya hata alması durumunda 0/1  değerlerini almalıdır. (0=Batch Çalışması Başladı., 1=Batch Çalışması Tamamlandı., 2=Batch Çalışması Devam Ediyor., 3=Batch Çalışması Sırasında Hata Oluştu.)
+DATA_PERIOD	Bu batch için boş bırakılacaktır.
+FILE_REFERENCE_NO	Bu batch için boş bırakılacaktır.
+BATCH_START_DATE	Batch'in Başlatıldığı Tarih ve Saati
+BATCH_END_DATE	Batch'in Çalışmasının Tamamlandığı Tarih ve Saati. Batch çalışmasında Hata alınması sonucunda batch çalışması sona ererse bu durumda da bu alan update edilmelidir.
+ERROR_FLAG	Program çalışması başarılı bir şekilde gerçekleşmezse bu alan 1 olarak güncellenecektir. Batch Başlangıcında 0 olarak tutulacaktır. 
+CREATE_USER	Ekrandan İşlemi Başlatan Kullanıcı Bilgisi
+CREATE_DATE	Kaydın oluşturulduğu tarih
+UPDATE_USER	Kaydı güncelleyen user bilgisi
+UPDATE_DATE	Kaydın güncellendiği tarih
+DELETE_FLAG	Kaydın Veri tabanından kaldırılması yerine bir Flag yapısı ile silindi bilgisinin tutulduğu alandır.
+VERSION	Aynı kaydın aynı anda iki farklı istek tarafından update edilmemesini sağlayan yapı için gerekli alandır.
+BATCH_ID	DK modülü içerisinde çalışan batch loglarının tutulduğu tablonun id'sidir.
+Fonksiyon tamamlandıktan sonra;
+•	BATCH_LOGS tablosunda oluşturulan BATCH_STATUS alanı Batch tamamlandığında 1 olarak; hata aldığında ise 3 değerini alacak şekilde güncellenmelidir. Çalışma başlatılmış ve devam ediyor henüz sonlanmamışsa BATCH_STATUS değeri 2 olarak güncellenecektir.  (0=Batch Çalışması Başladı., 1=Batch Çalışması Tamamlandı., 2=Batch Çalışması Devam Ediyor., 3=Batch Çalışması Sırasında Hata Oluştu.)
+•	Batch'lerin normal düzende çalışması, hata alınması ya da çalışan bir batch'in tekrar tetiklenmesi gibi durumlarına göre işlemler 3 farklı yolda izlenecektir.
+a.	Batch Çalışması normal düzende devam edip sonlandığında aşağıdaki akış yürütülecektir:
+	Batch Ekrandan tetiklenecek. --> BATCH_LOGS tablosuna BATCH_STATUS=0 kaydı atılacak.--> DataFlow’dan Batch tetiklenecek (TRUE değeri dönerse) ---> BATCH_STATUS=2 olarak güncellenecek. --->Batch'in içerisindeki tüm adımlar çalıştırılacak. --> Tüm adımlar tamamlanırsa  BATCH_STATUS=1 olarak güncellenecek. --> "Giden DK Kontrol Listesi Batch'i Tamamlanmıştır. Zeka küpünden liste görüntülemesi yapabilirsiniz"  maili atılacak.
+b.	Batch Çalışması devam ederken herhangi bir adımında hata alınması durumunda aşağıdaki akış yürütülecektir:
+	Batch Ekrandan tetiklenecek. --> BATCH_LOGS tablosuna BATCH_STATUS=0 kaydı atılacak.--> DataFlow’dan Batch tetiklenecek (TRUE değeri dönerse) ---> BATCH_STATUS=2 olarak güncellenecek. --->Batch'in içerisindeki adımlar çalışırken hata alınırsa BATCH_STATUS=3 olarak güncellenecek. --> "Giden DK Kontrol Listesi Batch'i Sırasında Hata Alınmıştır. Lütfen Batch Çalışmasını Tekrar Başlatınız." maili atılacak.
+c.	Batch Çalışması devam ederken yeni batch daha başlatılmaya çalışılırsa aşağıdaki akış yürütülecektir:
+	Batch Ekrandan tetiklenecek. --> BATCH_LOGS tablosuna BATCH_STATUS=0 kaydı atılacak.--> DataFlow’dan Batch tetiklenecek (FALSE değeri dönerse (devam eden bir batch daha olacağından FALSE dönecektir) ---> BATCH_LOGS tablosuna atılan kaydın alanları BATCH_STATUS=3 ve DELETE_FLAG=1 olarak güncellenecek. --> Ekranda “Giden DK Kontrol Listesi  için devam eden bir batch bulunmaktadır.” uyarısı gösterilecek, böylece kullanıcının devam eden batch'in üzerine yeni bir batch çalıştırması engellenecektir.
+•	BATCH çalışması TAMAMLANDIYSA ya da çalışma esnasında bir HATA ALINDIYSA; Batch çalışmasını tetikleyen kullanıcıya ve ortak grup mailine batch tamamlandığında ya da hata aldığında bildirim maili gönderilecektir. Mail içeriği ve mail adres detayları aşağıdaki gibidir:
+Başarılı ve Başarısız Batch bildirim mail template'i aşağıdaki gibi olacaktır:
+•	Batch Verileri
+Batch İsmi	Başlangıç Tarihi	Bitiş Tarihi	İşlem Tarihi	İşlemi Gerçekleştiren Kullanıcı Adı
+Giden DK Kontrol Listesi	Wed Feb 17 17:36:01 EET 2022	Wed Feb 17 18:50:06 EET 2022	20220404	AtxUser
+E-posta İletilecek Adres ekrandan giriş yapıp çalıştıran kullanıcının adresi olmalıdır.
+
+1.5.3 Ekran Alanları
+
+Alan Adı	Alan Türü	Açıklama	Combo Box / Radio Buton Listesi	Aktif/Pasif/Koşullu	Zorunlu/ opsiyonel	Gizli Alan	Component ID
+ Çalışma Tarihi	 Date	 İşlem yapılacak tarih aralığı seçilir. Başlama ve bitiş tarihinden herhangi biri boş bırakılamaz. Ekran açılışında bu alanlar default günün tarihi olarak gelir.	 	 Aktif	 Zorunlu	 	 
+1.5.4 Ekranda Gösterilecek Hata, Uyarı ve Bilgi Mesajları
+
+Mesaj Kodu	Mesaj Tipi	Mesaj	Mesajın Görüntülenme  Koşulu
+001	Hata	Tarih hatalı	Çalışma başlama veya bitiş tarihinden herhangi biri hatalı formatta girilmişse
+002	Hata	Çalışma başlama tarihi bitiş tarihinden büyük olamaz	Çalışma başlama tarihi bitiş tarihinden ileri bir tarih girilmişse
+1.6 Ekran Tasarımı
+Ekran - 1 
+      
+Ekran - 2
+ 
+Ekran - 3
+ 
+1.7 Erişim ve Yetkiler
+
+Rol Kodu	Yetki Adı	Açıklama
+ 	 	 
+ 
+1.8 Loglama İhtiyacı
+
+1.9 Veri Yapısı Modeli
+Kullanılan tüm tablo ve alanlarına ilişkin veri yapısı modeli iş kurallarında detaylandırılmıştır.
+
+
+
+
+
+
+2  FONKSİYONEL OLMAYAN GEREKSİNİMLER
+2.1 GÜVENLİK GEREKSİNİMLERİ
+
+Konu	Evet / Hayır	Alınacak Ek Aksiyon
+Devreye alınacak değişiklik kullanıcı otantikasyon ( Kullanıcı kodu + Şifre ) sürecini veya kullanıcı otorizasyon ( Login mekanizmaları ) mekanizmasını etkiliyor mu ?		
+İki adımlı kimlik doğrulama (2FA) ihtiyacı var mı?		
+Devreye alınacak değişiklik uygulamanın yetki yapısında ( Yeni bir işlev , rol )  değişiklik içeriyor mu ?		
+Devreye alınacak değişiklik uygulaması web önyüzüne sahip midir?		Penetrasyon Testi
+Devreye alınacak değişiklik uygulamanın kredi kartı kapsamına giren konularını içeriyor mu ? (PCI DSS)		
+Devreye alınacak değişiklik uygulamanın müşteri özlük bilgileri kapsamına giren konularını içeriyor mu ? (KVKK)		KVKK Envanter Güncellemesi ve özel loglama
+2.2  PERFORMANS GEREKSİNİMLERİ 
+
+Konu	Evet / Hayır
+Performans Testi yapılacak mı?	
+
+
+Performans Kriteri	Kapsamı
+	
+	
+2.3 TEST OTOMASYONU GEREKSİNİMLERİ 
+
+Konu	Evet / Hayır
+Test Otomasyonu ihtiyacı var mı?	
+Mevcut olan test otomasyonda değişiklik ihtiyacı var mı?	
+	
+
